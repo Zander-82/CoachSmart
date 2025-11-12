@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CoachSmart{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <header>
+        <nav class="bg-blue-600 text-white p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <a href="{{ url_for('index') }}" class="text-2xl font-bold">🏋️‍♂️ CoachSmart</a>
+                <ul class="flex space-x-6 items-center">
+                    <li><a href="{{ url_for('index') }}" class="hover:underline">Home</a></li>
+                    <li><a href="{{ url_for('features') }}" class="hover:underline">Features</a></li>
+                    <li><a href="{{ url_for('about') }}" class="hover:underline">About</a></li>
+                    <li><a href="{{ url_for('contact') }}" class="hover:underline">Contact</a></li>
+                    {% if 'user_id' in session %}
+                    <li class="ml-4">
+                        <span class="text-yellow-300 font-medium">Welcome, {{ session.get('username') }}</span>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('dashboard') }}" class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('logout') }}" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded">Logout</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="{{ url_for('get_started') }}" class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded">Get Started</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mx-auto mt-4">
+                {% for category, message in messages %}
+                    <div class="p-4 mb-4 text-sm rounded-lg {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-8 mt-12">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">CoachSmart</h3>
+                    <p class="text-gray-400">Your personal sports training companion with AI-powered feedback and training plans.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('features') }}" class="text-gray-400 hover:text-white">Features</a></li>
+                        <li><a href="{{ url_for('about') }}" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="text-gray-400 hover:text-white">Contact</a></li>
+                        {% if 'user_id' not in session %}
+                        <li><a href="{{ url_for('get_started') }}" class="text-gray-400 hover:text-white">Get Started</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>support@coachsmart.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-2"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 CoachSmart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

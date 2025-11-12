@@ -1,68 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - CoachSmart</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body class="bg-gray-100">
-    <!-- Navigation -->
-    <header>
-        <nav class="bg-blue-600 text-white p-4">
-            <div class="container">
-                <h1 class="text-2xl font-bold">🏋️‍♂️ CoachSmart</h1>
-                <ul>
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="{{ url_for('features') }}">Features</a></li>
-                    <li><a href="{{ url_for('about') }}" class="font-bold">About</a></li>
-                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+{% extends "base.html" %}
 
-    <!-- Main Content -->
-    <main class="container mx-auto p-4">
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-3xl font-bold mb-6 text-center">About CoachSmart</h2>
-            
-            <div class="max-w-3xl mx-auto">
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold mb-3">Our Mission</h3>
-                    <p class="text-gray-700 mb-4">
-                        At CoachSmart, we believe that everyone deserves access to personalized fitness guidance. 
-                        Our mission is to make professional-level training accessible to everyone, regardless of 
-                        their fitness level or experience.
-                    </p>
+{% block title %}About - CoachSmart{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-3xl font-bold mb-6">About CoachSmart</h2>
+    
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Our Mission</h3>
+        <p class="text-gray-700 mb-4">
+            At CoachSmart, we believe that everyone deserves access to high-quality, personalized fitness training. 
+            Our mission is to make professional coaching accessible to athletes of all levels through the power of 
+            artificial intelligence and data-driven insights.
+        </p>
+        <p class="text-gray-700">
+            Whether you're a beginner looking to get started or an experienced athlete aiming to reach new heights, 
+            CoachSmart provides the tools and guidance you need to succeed.
+        </p>
+    </div>
+    
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Our Team</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gray-50 p-4 rounded-lg text-center">
+                <div class="w-32 h-32 bg-blue-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-user text-4xl text-blue-600"></i>
                 </div>
-                
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold mb-3">Our Story</h3>
-                    <p class="text-gray-700 mb-4">
-                        Founded in 2025, CoachSmart was born out of a passion for fitness and technology. 
-                        Our team of fitness enthusiasts and tech experts came together to create a platform 
-                        that combines the latest in AI technology with proven training methodologies.
-                    </p>
+                <h4 class="font-semibold">John Doe</h4>
+                <p class="text-gray-600 text-sm">Founder & CEO</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg text-center">
+                <div class="w-32 h-32 bg-green-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-user text-4xl text-green-600"></i>
                 </div>
-                
-                <div class="bg-blue-50 p-6 rounded-lg">
-                    <h3 class="text-xl font-semibold mb-3">Why Choose Us?</h3>
-                    <ul class="list-disc pl-5 space-y-2 text-gray-700">
-                        <li>Expert-designed training programs</li>
-                        <li>AI-powered form analysis</li>
-                        <li>Personalized workout recommendations</li>
-                        <li>Progress tracking and analytics</li>
-                        <li>User-friendly interface</li>
-                    </ul>
+                <h4 class="font-semibold">Jane Smith</h4>
+                <p class="text-gray-600 text-sm">Head of Training</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg text-center">
+                <div class="w-32 h-32 bg-purple-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-user text-4xl text-purple-600"></i>
                 </div>
+                <h4 class="font-semibold">Alex Johnson</h4>
+                <p class="text-gray-600 text-sm">AI Specialist</p>
             </div>
         </div>
-    </main>
-
-    <footer class="text-center p-4 mt-8 bg-gray-800 text-white">
-        <p>&copy; 2025 CoachSmart. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+    </div>
+    
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-semibold mb-4">Why Choose CoachSmart?</h3>
+        <ul class="space-y-3">
+            <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>Personalized training plans based on your goals and fitness level</span>
+            </li>
+            <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>AI-powered feedback on your form and technique</span>
+            </li>
+            <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>Track your progress with detailed analytics</span>
+            </li>
+            <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>Expert guidance from certified fitness professionals</span>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="mt-10 text-center">
+        <a href="{{ url_for('get_started') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg inline-flex items-center transition duration-200">
+            <i class="fas fa-plus mr-2"></i> Get Started
+        </a>
+    </div>
+</div>
+{% endblock %}
