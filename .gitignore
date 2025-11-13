@@ -24,11 +24,6 @@ wheels/
 venv/
 ENV/
 
-# Database
-instance/
-*.db
-*.sqlite3
-
 # Environment variables
 .env
 
