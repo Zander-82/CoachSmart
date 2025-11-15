@@ -133,5 +133,34 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('index'))
 
+# Workout Routes
+@app.route('/start-workout')
+def start_workout():
+    if 'user_id' not in session:
+        flash('Please sign in to start a workout.', 'error')
+        return redirect(url_for('get_started'))
+    return render_template('workout.html', username=session.get('username'))
+
+@app.route('/training-plan')
+def training_plan():
+    if 'user_id' not in session:
+        flash('Please sign in to view your training plan.', 'error')
+        return redirect(url_for('get_started'))
+    return render_template('training_plan.html', username=session.get('username'))
+
+@app.route('/activity')
+def activity():
+    if 'user_id' not in session:
+        flash('Please sign in to view your activity.', 'error')
+        return redirect(url_for('get_started'))
+    return render_template('activity.html', username=session.get('username'))
+
+@app.route('/challenges')
+def challenges():
+    if 'user_id' not in session:
+        flash('Please sign in to view challenges.', 'error')
+        return redirect(url_for('get_started'))
+    return render_template('challenges.html', username=session.get('username'))
+
 if __name__ == '__main__':
     app.run(debug=True)

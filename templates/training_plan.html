@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}Training Plan - CoachSmart 📋{% endblock %}
+
+{% block content %}
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.plan-card {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+.pulsing {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.day-badge {
+    transition: all 0.3s ease;
+}
+
+.day-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.edit-btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.edit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.edit-btn:hover::before {
+    left: 100%;
+}
+
+.edit-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+}
+</style>
+
+<div class="container mx-auto p-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-5xl font-black mb-4 gradient-text floating">📋 YOUR TRAINING PLAN</h1>
+        <p class="text-xl text-gray-300">Customize your weekly schedule! 📅</p>
+    </div>
+
+    <!-- Week Overview -->
+    <div class="plan-card rounded-2xl p-6 mb-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black text-white">This Week's Schedule</h2>
+            <button class="edit-btn bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-2 px-4 rounded-lg">
+                ✏️ Edit Plan
+            </button>
+        </div>
+
+        <div class="grid grid-cols-7 gap-2">
+            <div class="text-center">
+                <div class="day-badge bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-xl">
+                    <p class="text-white font-black">MON</p>
+                    <p class="text-2xl mt-1">💪</p>
+                    <p class="text-xs text-gray-200">Upper Body</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <div class="day-badge bg-gradient-to-r from-green-500 to-blue-500 p-3 rounded-xl">
+                    <p class="text-white font-black">TUE</p>
+                    <p class="text-2xl mt-1">🦵</p>
+                    <p class="text-xs text-gray-200">Lower Body</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <div class="day-badge bg-gradient-to-r from-orange-500 to-red-500 p-3 rounded-xl">
+                    <p class="text-white font-black">WED</p>
+                    <p class="text-2xl mt-1">🏃</p>
+                    <p class="text-xs text-gray-200">Cardio</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <div class="day-badge bg-gray-600 p-3 rounded-xl opacity-50">
+                    <p class="text-white font-black">THU</p>
+                    <p class="text-2xl mt-1">😴</p>
+                    <p class="text-xs text-gray-200">Rest</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <div class="day-badge bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-xl">
+                    <p class="text-white font-black">FRI</p>
+                    <p class="text-2xl mt-1">🧘</p>
+                    <p class="text-xs text-gray-200">Yoga</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <div class="day-badge bg-gradient-to-r from-red-500 to-orange-500 p-3 rounded-xl">
+                    <p class="text-white font-black">SAT</p>
+                    <p class="text-2xl mt-1">🥊</p>
+                    <p class="text-xs text-gray-200">Boxing</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <div class="day-badge bg-gradient-to-r from-yellow-500 to-green-500 p-3 rounded-xl">
+                    <p class="text-white font-black">SUN</p>
+                    <p class="text-2xl mt-1">⚡</p>
+                    <p class="text-xs text-gray-200">HIIT</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Plan -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="plan-card rounded-2xl p-6">
+            <h3 class="text-xl font-black text-white mb-4">🎯 Today's Workout</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                    <span class="text-white">Push-ups</span>
+                    <span class="text-yellow-300 font-black">3x15</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                    <span class="text-white">Pull-ups</span>
+                    <span class="text-yellow-300 font-black">3x10</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                    <span class="text-white">Shoulder Press</span>
+                    <span class="text-yellow-300 font-black">3x12</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                    <span class="text-white">Bicep Curls</span>
+                    <span class="text-yellow-300 font-black">3x15</span>
+                </div>
+            </div>
+            <button class="edit-btn w-full mt-4 bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl">
+                🔥 START WORKOUT
+            </button>
+        </div>
+
+        <div class="plan-card rounded-2xl p-6">
+            <h3 class="text-xl font-black text-white mb-4">📈 Progress Stats</h3>
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-300">Weekly Goal</span>
+                        <span class="text-yellow-300 font-black">5/7 workouts</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-3">
+                        <div class="bg-gradient-to-r from-yellow-400 to-green-500 h-3 rounded-full" style="width: 71%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-300">Strength Progress</span>
+                        <span class="text-blue-300 font-black">Level 3</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-3">
+                        <div class="bg-gradient-to-r from-blue-400 to-purple-500 h-3 rounded-full" style="width: 60%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-300">Endurance</span>
+                        <span class="text-green-300 font-black">Good</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-3">
+                        <div class="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goals Section -->
+    <div class="plan-card rounded-2xl p-6">
+        <h2 class="text-2xl font-black text-white mb-6">🎯 Your Goals</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-gradient-to-r from-orange-500/20 to-red-500/20 p-4 rounded-xl border border-orange-500/30">
+                <h3 class="font-black text-orange-300 mb-2">🔥 Lose Weight</h3>
+                <p class="text-gray-300 text-sm mb-2">Target: 5kg this month</p>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-orange-400 to-red-500 h-2 rounded-full" style="width: 40%"></div>
+                </div>
+                <p class="text-gray-400 text-xs mt-1">2kg lost</p>
+            </div>
+            <div class="bg-gradient-to-r from-blue-500/20 to-purple-500/20 p-4 rounded-xl border border-blue-500/30">
+                <h3 class="font-black text-blue-300 mb-2">💪 Build Muscle</h3>
+                <p class="text-gray-300 text-sm mb-2">Target: +3kg muscle</p>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full" style="width: 25%"></div>
+                </div>
+                <p class="text-gray-400 text-xs mt-1">0.8kg gained</p>
+            </div>
+            <div class="bg-gradient-to-r from-green-500/20 to-blue-500/20 p-4 rounded-xl border border-green-500/30">
+                <h3 class="font-black text-green-300 mb-2">⚡ Improve Stamina</h3>
+                <p class="text-gray-300 text-sm mb-2">Target: 5K under 25min</p>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full" style="width: 80%"></div>
+                </div>
+                <p class="text-gray-400 text-xs mt-1">Current: 26:30</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

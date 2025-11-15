@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block title %}Challenges - CoachSmart 🏆{% endblock %}
+
+{% block content %}
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+    50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.8); }
+}
+
+.challenge-card {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.challenge-card:hover {
+    transform: translateY(-5px);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+}
+
+.challenge-card.gold {
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    animation: glow 2s ease-in-out infinite;
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+.pulsing {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.join-btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.join-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.join-btn:hover::before {
+    left: 100%;
+}
+
+.join-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+}
+
+.tab-btn {
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    transform: translateY(-2px);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+    border-color: rgba(102, 126, 234, 0.5);
+}
+</style>
+
+<div class="container mx-auto p-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-5xl font-black mb-4 gradient-text floating">🏆 CHALLENGES</h1>
+        <p class="text-xl text-gray-300">Compete, achieve, and win rewards! 🎯</p>
+    </div>
+
+    <!-- Challenge Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="challenge-card rounded-2xl p-4 text-center">
+            <span class="text-3xl floating">🔥</span>
+            <p class="text-2xl font-black text-orange-300 mt-2 pulsing">2</p>
+            <p class="text-gray-400 text-sm">Active</p>
+        </div>
+        <div class="challenge-card rounded-2xl p-4 text-center">
+            <span class="text-3xl floating" style="animation-delay: 0.2s;">✅</span>
+            <p class="text-2xl font-black text-green-300 mt-2 pulsing" style="animation-delay: 0.2s;">8</p>
+            <p class="text-gray-400 text-sm">Completed</p>
+        </div>
+        <div class="challenge-card rounded-2xl p-4 text-center">
+            <span class="text-3xl floating" style="animation-delay: 0.4s;">🏅</span>
+            <p class="text-2xl font-black text-yellow-300 mt-2 pulsing" style="animation-delay: 0.4s;">3</p>
+            <p class="text-gray-400 text-sm">Gold Medals</p>
+        </div>
+        <div class="challenge-card rounded-2xl p-4 text-center">
+            <span class="text-3xl floating" style="animation-delay: 0.6s;">💎</span>
+            <p class="text-2xl font-black text-purple-300 mt-2 pulsing" style="animation-delay: 0.6s;">1,250</p>
+            <p class="text-gray-400 text-sm">Total Points</p>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex flex-wrap gap-3 mb-6">
+        <button class="tab-btn active px-4 py-2 rounded-xl border border-purple-500/30 text-white font-black">
+            🔥 Active
+        </button>
+        <button class="tab-btn px-4 py-2 rounded-xl border border-purple-500/30 text-gray-300 font-black hover:text-white">
+            📋 Available
+        </button>
+        <button class="tab-btn px-4 py-2 rounded-xl border border-purple-500/30 text-gray-300 font-black hover:text-white">
+            ✅ Completed
+        </button>
+        <button class="tab-btn px-4 py-2 rounded-xl border border-purple-500/30 text-gray-300 font-black hover:text-white">
+            🏆 Leaderboard
+        </button>
+    </div>
+
+    <!-- Active Challenges -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="challenge-card rounded-2xl p-6">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="text-xl font-black text-orange-300 mb-2">🔥 30-Day Streak</h3>
+                    <p class="text-gray-300 text-sm">Keep the fire burning! Work out every day for 30 days.</p>
+                </div>
+                <div class="bg-orange-500/20 p-2 rounded-lg">
+                    <span class="text-2xl">🔥</span>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <div class="flex justify-between text-sm mb-2">
+                    <span class="text-gray-300">Progress</span>
+                    <span class="text-orange-300 font-black">5/30 days</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-3">
+                    <div class="bg-gradient-to-r from-orange-400 to-red-500 h-3 rounded-full transition-all duration-500" style="width: 17%"></div>
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center">
+                <div class="text-sm">
+                    <span class="text-yellow-300">🏆 Reward:</span>
+                    <span class="text-gray-300 ml-1">500 pts + Fire Badge</span>
+                </div>
+                <div class="text-sm text-gray-400">
+                    📅 25 days left
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-card rounded-2xl p-6">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="text-xl font-black text-blue-300 mb-2">💪 Strength Builder</h3>
+                    <p class="text-gray-300 text-sm">Complete 20 strength workouts to build muscle power.</p>
+                </div>
+                <div class="bg-blue-500/20 p-2 rounded-lg">
+                    <span class="text-2xl">💪</span>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <div class="flex justify-between text-sm mb-2">
+                    <span class="text-gray-300">Progress</span>
+                    <span class="text-blue-300 font-black">8/20 workouts</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-3">
+                    <div class="bg-gradient-to-r from-blue-400 to-green-500 h-3 rounded-full transition-all duration-500" style="width: 40%"></div>
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center">
+                <div class="text-sm">
+                    <span class="text-yellow-300">🏆 Reward:</span>
+                    <span class="text-gray-300 ml-1">300 pts + Strength Badge</span>
+                </div>
+                <div class="text-sm text-gray-400">
+                    📅 No time limit
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Challenges -->
+    <h2 class="text-2xl font-black text-white mb-6">📋 Available Challenges</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="challenge-card rounded-2xl p-6">
+            <div class="text-center mb-4">
+                <span class="text-4xl floating">🏃</span>
+                <h3 class="text-lg font-black text-green-300 mt-3">Speed Demon</h3>
+                <p class="text-gray-300 text-sm mt-2">Run 5K under 22 minutes</p>
+            </div>
+            
+            <div class="text-center mb-4">
+                <span class="text-yellow-300">🏆 400 pts</span>
+            </div>
+            
+            <button class="join-btn w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-2 px-4 rounded-xl">
+                JOIN CHALLENGE
+            </button>
+        </div>
+
+        <div class="challenge-card rounded-2xl p-6">
+            <div class="text-center mb-4">
+                <span class="text-4xl floating" style="animation-delay: 0.2s;">🧘</span>
+                <h3 class="text-lg font-black text-purple-300 mt-3">Zen Master</h3>
+                <p class="text-gray-300 text-sm mt-2">Complete 15 yoga sessions</p>
+            </div>
+            
+            <div class="text-center mb-4">
+                <span class="text-yellow-300">🏆 250 pts</span>
+            </div>
+            
+            <button class="join-btn w-full bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-black py-2 px-4 rounded-xl">
+                JOIN CHALLENGE
+            </button>
+        </div>
+
+        <div class="challenge-card rounded-2xl p-6">
+            <div class="text-center mb-4">
+                <span class="text-4xl floating" style="animation-delay: 0.4s;">🥊</span>
+                <h3 class="text-lg font-black text-red-300 mt-3">Fighter</h3>
+                <p class="text-gray-300 text-sm mt-2">Complete 10 boxing workouts</p>
+            </div>
+            
+            <div class="text-center mb-4">
+                <span class="text-yellow-300">🏆 350 pts</span>
+            </div>
+            
+            <button class="join-btn w-full bg-gradient-to-r from-red-400 to-orange-500 hover:from-red-500 hover:to-orange-600 text-white font-black py-2 px-4 rounded-xl">
+                JOIN CHALLENGE
+            </button>
+        </div>
+
+        <div class="challenge-card rounded-2xl p-6">
+            <div class="text-center mb-4">
+                <span class="text-4xl floating" style="animation-delay: 0.6s;">⚡</span>
+                <h3 class="text-lg font-black text-yellow-300 mt-3">HIIT Hero</h3>
+                <p class="text-gray-300 text-sm mt-2">Complete 25 HIIT workouts</p>
+            </div>
+            
+            <div class="text-center mb-4">
+                <span class="text-yellow-300">🏆 450 pts</span>
+            </div>
+            
+            <button class="join-btn w-full bg-gradient-to-r from-yellow-400 to-green-500 hover:from-yellow-500 hover:to-green-600 text-white font-black py-2 px-4 rounded-xl">
+                JOIN CHALLENGE
+            </button>
+        </div>
+
+        <div class="challenge-card rounded-2xl p-6">
+            <div class="text-center mb-4">
+                <span class="text-4xl floating" style="animation-delay: 0.8s;">🌅</span>
+                <h3 class="text-lg font-black text-blue-300 mt-3">Early Bird</h3>
+                <p class="text-gray-300 text-sm mt-2">10 morning workouts (6-8 AM)</p>
+            </div>
+            
+            <div class="text-center mb-4">
+                <span class="text-yellow-300">🏆 200 pts</span>
+            </div>
+            
+            <button class="join-btn w-full bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-2 px-4 rounded-xl">
+                JOIN CHALLENGE
+            </button>
+        </div>
+
+        <div class="challenge-card rounded-2xl p-6">
+            <div class="text-center mb-4">
+                <span class="text-4xl floating" style="animation-delay: 1s;">🎯</span>
+                <h3 class="text-lg font-black text-purple-300 mt-3">Perfect Week</h3>
+                <p class="text-gray-300 text-sm mt-2">7 workouts in one week</p>
+            </div>
+            
+            <div class="text-center mb-4">
+                <span class="text-yellow-300">🏆 300 pts</span>
+            </div>
+            
+            <button class="join-btn w-full bg-gradient-to-r from-purple-400 to-blue-500 hover:from-purple-500 hover:to-blue-600 text-white font-black py-2 px-4 rounded-xl">
+                JOIN CHALLENGE
+            </button>
+        </div>
+    </div>
+
+    <!-- Completed Challenges -->
+    <h2 class="text-2xl font-black text-white mb-6">✅ Recently Completed</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="challenge-card rounded-2xl p-6 opacity-75">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-black text-green-300 mb-1">🏆 Week Warrior</h3>
+                    <p class="text-gray-300 text-sm">Completed 7 workouts in a week</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-2xl">✅</span>
+                    <p class="text-green-400 text-sm mt-1">+200 pts</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-card rounded-2xl p-6 opacity-75">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-black text-blue-300 mb-1">💧 Hydration Hero</h3>
+                    <p class="text-gray-300 text-sm">Drank 8 glasses of water daily for 14 days</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-2xl">✅</span>
+                    <p class="text-blue-400 text-sm mt-1">+150 pts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -138,9 +138,9 @@
                         <h2 class="text-2xl font-black text-white">START NEW WORKOUT</h2>
                     </div>
                     <p class="text-gray-300 mb-6">Begin a new training session with your personalized plan! 💪</p>
-                    <button class="action-btn w-full bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl">
+                    <a href="{{ url_for('start_workout') }}" class="action-btn block w-full bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl text-center">
                         🔥 START WORKOUT
-                    </button>
+                    </a>
                 </div>
 
                 <div class="dashboard-card rounded-2xl p-6">
@@ -149,9 +149,9 @@
                         <h2 class="text-2xl font-black text-white">YOUR TRAINING PLAN</h2>
                     </div>
                     <p class="text-gray-300 mb-6">View and customize your weekly training schedule! 📅</p>
-                    <button class="action-btn w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-3 px-6 rounded-xl">
+                    <a href="{{ url_for('training_plan') }}" class="action-btn block w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-3 px-6 rounded-xl text-center">
                         📈 VIEW PLAN
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -162,7 +162,7 @@
                         <span class="text-3xl mr-3 floating">📊</span>
                         <h2 class="text-2xl font-black text-white">RECENT ACTIVITY</h2>
                     </div>
-                    <a href="#" class="text-yellow-300 hover:text-yellow-200 font-black transition-colors">View All →</a>
+                    <a href="{{ url_for('activity') }}" class="text-yellow-300 hover:text-yellow-200 font-black transition-colors">View All →</a>
                 </div>
 
                 <div class="space-y-4">
@@ -203,10 +203,10 @@
 
             <!-- Challenges Section -->
             <div class="dashboard-card rounded-2xl p-6">
-                <div class="flex items-center mb-6">
+                <a href="{{ url_for('challenges') }}" class="flex items-center mb-6 group">
                     <span class="text-3xl mr-3 floating" style="animation-delay: 0.3s;">🏆</span>
-                    <h2 class="text-2xl font-black text-white">ACTIVE CHALLENGES</h2>
-                </div>
+                    <h2 class="text-2xl font-black text-white group-hover:text-yellow-300 transition-colors">ACTIVE CHALLENGES</h2>
+                </a>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-gradient-to-r from-orange-500/20 to-red-500/20 p-4 rounded-xl border border-orange-500/30">
                         <h3 class="font-black text-orange-300 mb-2">🔥 30-Day Streak</h3>
