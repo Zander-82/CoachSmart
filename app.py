@@ -21,8 +21,12 @@ def create_tables():
     with app.app_context():
         db.create_all()
 
-# Call this function to create tables
-create_tables()
+# Flask CLI command to initialize database
+@app.cli.command('init-db')
+def init_db_command():
+    """Initialize the database."""
+    create_tables()
+    print('Database initialized.')
 
 @app.route('/')
 def index():
