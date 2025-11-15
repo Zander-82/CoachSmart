@@ -121,109 +121,78 @@
         <h2 class="text-2xl font-black text-white mb-6">Recent Activities</h2>
         
         <div class="space-y-4">
-            <!-- Today -->
-            <div class="activity-item flex items-center p-4 rounded-xl">
-                <div class="bg-green-500/20 p-3 rounded-full mr-4">
-                    <span class="text-2xl">✅</span>
+            {% if activities %}
+                {% for activity in activities %}
+                    {% if activity.activity_type == 'workout' %}
+                        <div class="activity-item flex items-center p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30">
+                            <div class="bg-green-500/20 p-3 rounded-full mr-4">
+                                <span class="text-2xl">✅</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-black text-white">{{ activity.title }}</p>
+                                <p class="text-sm text-gray-300">{{ activity.created_at.strftime('%B %d at %I:%M %p') }} • {{ activity.description }}</p>
+                            </div>
+                            {% if activity.points_earned > 0 %}
+                                <span class="text-green-400 font-black text-lg pulsing">+{{ activity.points_earned }} pts</span>
+                            {% endif %}
+                        </div>
+                    {% elif activity.activity_type == 'achievement' %}
+                        <div class="activity-item flex items-center p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30">
+                            <div class="bg-purple-500/20 p-3 rounded-full mr-4">
+                                <span class="text-2xl">🏆</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-black text-white">{{ activity.title }}</p>
+                                <p class="text-sm text-gray-300">{{ activity.created_at.strftime('%B %d at %I:%M %p') }} • {{ activity.description }}</p>
+                            </div>
+                            {% if activity.points_earned > 0 %}
+                                <span class="text-purple-400 font-black text-lg pulsing">+{{ activity.points_earned }} pts</span>
+                            {% endif %}
+                        </div>
+                    {% elif activity.activity_type == 'challenge' %}
+                        <div class="activity-item flex items-center p-4 rounded-xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30">
+                            <div class="bg-yellow-500/20 p-3 rounded-full mr-4">
+                                <span class="text-2xl">🎯</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-black text-white">{{ activity.title }}</p>
+                                <p class="text-sm text-gray-300">{{ activity.created_at.strftime('%B %d at %I:%M %p') }} • {{ activity.description }}</p>
+                            </div>
+                        </div>
+                    {% elif activity.activity_type == 'milestone' %}
+                        <div class="activity-item flex items-center p-4 rounded-xl bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/30">
+                            <div class="bg-red-500/20 p-3 rounded-full mr-4">
+                                <span class="text-2xl">🔥</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-black text-white">{{ activity.title }}</p>
+                                <p class="text-sm text-gray-300">{{ activity.created_at.strftime('%B %d at %I:%M %p') }} • {{ activity.description }}</p>
+                            </div>
+                            {% if activity.points_earned > 0 %}
+                                <span class="text-red-400 font-black text-lg pulsing">+{{ activity.points_earned }} pts</span>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="activity-item flex items-center p-4 rounded-xl">
+                            <div class="bg-gray-500/20 p-3 rounded-full mr-4">
+                                <span class="text-2xl">📊</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-black text-white">{{ activity.title }}</p>
+                                <p class="text-sm text-gray-300">{{ activity.created_at.strftime('%B %d at %I:%M %p') }} • {{ activity.description }}</p>
+                            </div>
+                            {% if activity.points_earned > 0 %}
+                                <span class="text-gray-400 font-black text-lg pulsing">+{{ activity.points_earned }} pts</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-8">
+                    <span class="text-5xl mb-4 block">📊</span>
+                    <p class="text-gray-300 font-bold">No activities yet. Start your first workout to see your progress!</p>
                 </div>
-                <div class="flex-1">
-                    <p class="font-black text-white">Completed: Upper Body Workout</p>
-                    <p class="text-sm text-gray-300">Today at 8:00 AM • 45 minutes</p>
-                </div>
-                <span class="text-green-400 font-black text-lg pulsing">+120 pts</span>
-            </div>
-
-            <!-- Yesterday -->
-            <div class="activity-item flex items-center p-4 rounded-xl">
-                <div class="bg-blue-500/20 p-3 rounded-full mr-4">
-                    <span class="text-2xl">🏃</span>
-                </div>
-                <div class="flex-1">
-                    <p class="font-black text-white">Completed: 5K Run</p>
-                    <p class="text-sm text-gray-300">Yesterday at 6:30 PM • 32 minutes</p>
-                </div>
-                <span class="text-blue-400 font-black text-lg pulsing">+80 pts</span>
-            </div>
-
-            <div class="activity-item flex items-center p-4 rounded-xl">
-                <div class="bg-yellow-500/20 p-3 rounded-full mr-4">
-                    <span class="text-2xl">🎯</span>
-                </div>
-                <div class="flex-1">
-                    <p class="font-black text-white">New Personal Best: 5K Run</p>
-                    <p class="text-sm text-gray-300">Yesterday at 6:30 PM • 24:36 time</p>
-                </div>
-                <span class="text-yellow-400 font-black text-lg pulsing">+50 pts</span>
-            </div>
-
-            <!-- 2 days ago -->
-            <div class="activity-item flex items-center p-4 rounded-xl">
-                <div class="bg-purple-500/20 p-3 rounded-full mr-4">
-                    <span class="text-2xl">🏅</span>
-                </div>
-                <div class="flex-1">
-                    <p class="font-black text-white">Achievement Unlocked: Week Warrior</p>
-                    <p class="text-sm text-gray-300">2 days ago • Completed 7 workouts this week</p>
-                </div>
-                <span class="text-purple-400 font-black text-lg pulsing">+200 pts</span>
-            </div>
-
-            <div class="activity-item flex items-center p-4 rounded-xl">
-                <div class="bg-orange-500/20 p-3 rounded-full mr-4">
-                    <span class="text-2xl">💪</span>
-                </div>
-                <div class="flex-1">
-                    <p class="font-black text-white">Completed: Lower Body Workout</p>
-                    <p class="text-sm text-gray-300">2 days ago at 7:00 PM • 40 minutes</p>
-                </div>
-                <span class="text-orange-400 font-black text-lg pulsing">+100 pts</span>
-            </div>
-
-            <!-- 3 days ago -->
-            <div class="activity-item flex items-center p-4 rounded-xl">
-                <div class="bg-green-500/20 p-3 rounded-full mr-4">
-                    <span class="text-2xl">🧘</span>
-                </div>
-                <div class="flex-1">
-                    <p class="font-black text-white">Completed: Yoga Flow</p>
-                    <p class="text-sm text-gray-300">3 days ago at 6:00 AM • 35 minutes</p>
-                </div>
-                <span class="text-green-400 font-black text-lg pulsing">+60 pts</span>
-            </div>
-
-            <div class="activity-item flex items-center p-4 rounded-xl">
-                <div class="bg-red-500/20 p-3 rounded-full mr-4">
-                    <span class="text-2xl">🔥</span>
-                </div>
-                <div class="flex-1">
-                    <p class="font-black text-white">Milestone: 30-Day Streak!</p>
-                    <p class="text-sm text-gray-300">3 days ago • Consistent workouts for a month</p>
-                </div>
-                <span class="text-red-400 font-black text-lg pulsing">+500 pts</span>
-            </div>
-
-            <!-- 4 days ago -->
-            <div class="activity-item flex items-center p-4 rounded-xl">
-                <div class="bg-blue-500/20 p-3 rounded-full mr-4">
-                    <span class="text-2xl">🥊</span>
-                </div>
-                <div class="flex-1">
-                    <p class="font-black text-white">Completed: Boxing Session</p>
-                    <p class="text-sm text-gray-300">4 days ago at 5:30 PM • 50 minutes</p>
-                </div>
-                <span class="text-blue-400 font-black text-lg pulsing">+130 pts</span>
-            </div>
-
-            <div class="activity-item flex items-center p-4 rounded-xl">
-                <div class="bg-purple-500/20 p-3 rounded-full mr-4">
-                    <span class="text-2xl">⚡</span>
-                </div>
-                <div class="flex-1">
-                    <p class="font-black text-white">Level Up! Reached Level 5</p>
-                    <p class="text-sm text-gray-300">4 days ago • Total points: 2,340</p>
-                </div>
-                <span class="text-purple-400 font-black text-lg pulsing">+100 pts</span>
-            </div>
+            {% endif %}
         </div>
 
         <!-- Load More -->
@@ -239,15 +208,15 @@
         <h2 class="text-2xl font-black text-white mb-6">📅 This Month</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="text-center">
-                <p class="text-3xl font-black text-green-300 pulsing">18</p>
+                <p class="text-3xl font-black text-green-300 pulsing">{{ monthly_stats.workout_count or 0 }}</p>
                 <p class="text-gray-300">Workouts Completed</p>
             </div>
             <div class="text-center">
-                <p class="text-3xl font-black text-blue-300 pulsing">12.5h</p>
+                <p class="text-3xl font-black text-blue-300 pulsing">{{ "%.1fh" | format((monthly_stats.total_time_minutes or 0) / 60) }}</p>
                 <p class="text-gray-300">Total Duration</p>
             </div>
             <div class="text-center">
-                <p class="text-3xl font-black text-yellow-300 pulsing">850</p>
+                <p class="text-3xl font-black text-yellow-300 pulsing">{{ monthly_stats.points_earned or 0 }}</p>
                 <p class="text-gray-300">Points Earned</p>
             </div>
         </div>

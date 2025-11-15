@@ -143,200 +143,119 @@
     </div>
 
     <!-- Active Challenges -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div class="challenge-card rounded-2xl p-6">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <h3 class="text-xl font-black text-orange-300 mb-2">🔥 30-Day Streak</h3>
-                    <p class="text-gray-300 text-sm">Keep the fire burning! Work out every day for 30 days.</p>
-                </div>
-                <div class="bg-orange-500/20 p-2 rounded-lg">
-                    <span class="text-2xl">🔥</span>
-                </div>
-            </div>
-            
-            <div class="mb-4">
-                <div class="flex justify-between text-sm mb-2">
-                    <span class="text-gray-300">Progress</span>
-                    <span class="text-orange-300 font-black">5/30 days</span>
-                </div>
-                <div class="w-full bg-gray-700 rounded-full h-3">
-                    <div class="bg-gradient-to-r from-orange-400 to-red-500 h-3 rounded-full transition-all duration-500" style="width: 17%"></div>
-                </div>
-            </div>
-            
-            <div class="flex justify-between items-center">
-                <div class="text-sm">
-                    <span class="text-yellow-300">🏆 Reward:</span>
-                    <span class="text-gray-300 ml-1">500 pts + Fire Badge</span>
-                </div>
-                <div class="text-sm text-gray-400">
-                    📅 25 days left
-                </div>
-            </div>
-        </div>
+    <h2 class="text-2xl font-black text-white mb-6">🔥 Active Challenges</h2>
+    {% if active_challenges %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {% for user_challenge, challenge in active_challenges %}
+                {% set progress_percent = (user_challenge.current_progress / challenge.target_value * 100) if challenge.target_value > 0 else 0 %}
+                <div class="challenge-card rounded-2xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="text-lg font-black text-orange-300 mb-1">🔥 {{ challenge.name }}</h3>
+                            <p class="text-gray-300 text-sm">{{ challenge.description }}</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-2xl floating">🎯</span>
+                            <p class="text-orange-400 text-sm mt-1">{{ challenge.points_reward }} pts</p>
+                        </div>
+                    </div>
 
-        <div class="challenge-card rounded-2xl p-6">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <h3 class="text-xl font-black text-blue-300 mb-2">💪 Strength Builder</h3>
-                    <p class="text-gray-300 text-sm">Complete 20 strength workouts to build muscle power.</p>
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm text-gray-400 mb-1">
+                            <span>Progress</span>
+                            <span>{{ user_challenge.current_progress }}/{{ challenge.target_value }} {% if challenge.challenge_type == 'streak' %}days{% elif challenge.challenge_type == 'workout_count' %}workouts{% else %}goals{% endif %}</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-orange-400 to-red-500 h-3 rounded-full transition-all duration-500" style="--progress-width: {{ progress_percent }}%; width: var(--progress-width)"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm">
+                            <span class="text-yellow-300">🏆 Reward:</span>
+                            <span class="text-gray-300 ml-1">{{ challenge.points_reward }} pts + Badge</span>
+                        </div>
+                        <div class="text-sm text-gray-400">
+                            {% if challenge.challenge_type == 'streak' %}📅 {{ challenge.target_value }} days{% else %}📊 No time limit{% endif %}
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-blue-500/20 p-2 rounded-lg">
-                    <span class="text-2xl">💪</span>
-                </div>
-            </div>
-            
-            <div class="mb-4">
-                <div class="flex justify-between text-sm mb-2">
-                    <span class="text-gray-300">Progress</span>
-                    <span class="text-blue-300 font-black">8/20 workouts</span>
-                </div>
-                <div class="w-full bg-gray-700 rounded-full h-3">
-                    <div class="bg-gradient-to-r from-blue-400 to-green-500 h-3 rounded-full transition-all duration-500" style="width: 40%"></div>
-                </div>
-            </div>
-            
-            <div class="flex justify-between items-center">
-                <div class="text-sm">
-                    <span class="text-yellow-300">🏆 Reward:</span>
-                    <span class="text-gray-300 ml-1">300 pts + Strength Badge</span>
-                </div>
-                <div class="text-sm text-gray-400">
-                    📅 No time limit
-                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="challenge-card rounded-2xl p-8 mb-8">
+            <div class="text-center">
+                <span class="text-5xl mb-4 block">🎯</span>
+                <p class="text-gray-300 font-bold">No active challenges. Join some challenges to start earning rewards!</p>
             </div>
         </div>
-    </div>
+    {% endif %}
 
     <!-- Available Challenges -->
     <h2 class="text-2xl font-black text-white mb-6">📋 Available Challenges</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="challenge-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-4xl floating">🏃</span>
-                <h3 class="text-lg font-black text-green-300 mt-3">Speed Demon</h3>
-                <p class="text-gray-300 text-sm mt-2">Run 5K under 22 minutes</p>
-            </div>
-            
-            <div class="text-center mb-4">
-                <span class="text-yellow-300">🏆 400 pts</span>
-            </div>
-            
-            <button class="join-btn w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-2 px-4 rounded-xl">
-                JOIN CHALLENGE
-            </button>
-        </div>
+    {% if available_challenges %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {% for challenge in available_challenges %}
+                <div class="challenge-card rounded-2xl p-6">
+                    <div class="text-center mb-4">
+                        <span class="text-4xl floating">
+                            {% if challenge.challenge_type == 'streak' %}🔥
+                            {% elif challenge.challenge_type == 'workout_count' %}💪
+                            {% elif challenge.challenge_type == 'distance' %}🏃
+                            {% elif challenge.challenge_type == 'time' %}⏱️
+                            {% else %}🎯{% endif %}
+                        </span>
+                        <h3 class="text-lg font-black text-green-300 mt-3">{{ challenge.name }}</h3>
+                        <p class="text-gray-300 text-sm mt-2">{{ challenge.description }}</p>
+                    </div>
 
-        <div class="challenge-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-4xl floating" style="animation-delay: 0.2s;">🧘</span>
-                <h3 class="text-lg font-black text-purple-300 mt-3">Zen Master</h3>
-                <p class="text-gray-300 text-sm mt-2">Complete 15 yoga sessions</p>
-            </div>
-            
-            <div class="text-center mb-4">
-                <span class="text-yellow-300">🏆 250 pts</span>
-            </div>
-            
-            <button class="join-btn w-full bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-black py-2 px-4 rounded-xl">
-                JOIN CHALLENGE
-            </button>
-        </div>
+                    <div class="text-center mb-4">
+                        <span class="text-yellow-300">🏆 {{ challenge.points_reward }} pts</span>
+                    </div>
 
-        <div class="challenge-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-4xl floating" style="animation-delay: 0.4s;">🥊</span>
-                <h3 class="text-lg font-black text-red-300 mt-3">Fighter</h3>
-                <p class="text-gray-300 text-sm mt-2">Complete 10 boxing workouts</p>
-            </div>
-            
-            <div class="text-center mb-4">
-                <span class="text-yellow-300">🏆 350 pts</span>
-            </div>
-            
-            <button class="join-btn w-full bg-gradient-to-r from-red-400 to-orange-500 hover:from-red-500 hover:to-orange-600 text-white font-black py-2 px-4 rounded-xl">
-                JOIN CHALLENGE
-            </button>
+                    <form action="{{ url_for('join_challenge', challenge_id=challenge.id) }}" method="POST">
+                        <button type="submit" class="join-btn w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-2 px-4 rounded-xl">
+                            JOIN CHALLENGE
+                        </button>
+                    </form>
+                </div>
+            {% endfor %}
         </div>
-
-        <div class="challenge-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-4xl floating" style="animation-delay: 0.6s;">⚡</span>
-                <h3 class="text-lg font-black text-yellow-300 mt-3">HIIT Hero</h3>
-                <p class="text-gray-300 text-sm mt-2">Complete 25 HIIT workouts</p>
+    {% else %}
+        <div class="challenge-card rounded-2xl p-8 mb-8">
+            <div class="text-center">
+                <span class="text-5xl mb-4 block">🏆</span>
+                <p class="text-gray-300 font-bold">You've joined all available challenges! Keep working to complete them.</p>
             </div>
-            
-            <div class="text-center mb-4">
-                <span class="text-yellow-300">🏆 450 pts</span>
-            </div>
-            
-            <button class="join-btn w-full bg-gradient-to-r from-yellow-400 to-green-500 hover:from-yellow-500 hover:to-green-600 text-white font-black py-2 px-4 rounded-xl">
-                JOIN CHALLENGE
-            </button>
         </div>
-
-        <div class="challenge-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-4xl floating" style="animation-delay: 0.8s;">🌅</span>
-                <h3 class="text-lg font-black text-blue-300 mt-3">Early Bird</h3>
-                <p class="text-gray-300 text-sm mt-2">10 morning workouts (6-8 AM)</p>
-            </div>
-            
-            <div class="text-center mb-4">
-                <span class="text-yellow-300">🏆 200 pts</span>
-            </div>
-            
-            <button class="join-btn w-full bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-2 px-4 rounded-xl">
-                JOIN CHALLENGE
-            </button>
-        </div>
-
-        <div class="challenge-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-4xl floating" style="animation-delay: 1s;">🎯</span>
-                <h3 class="text-lg font-black text-purple-300 mt-3">Perfect Week</h3>
-                <p class="text-gray-300 text-sm mt-2">7 workouts in one week</p>
-            </div>
-            
-            <div class="text-center mb-4">
-                <span class="text-yellow-300">🏆 300 pts</span>
-            </div>
-            
-            <button class="join-btn w-full bg-gradient-to-r from-purple-400 to-blue-500 hover:from-purple-500 hover:to-blue-600 text-white font-black py-2 px-4 rounded-xl">
-                JOIN CHALLENGE
-            </button>
-        </div>
-    </div>
+    {% endif %}
 
     <!-- Completed Challenges -->
     <h2 class="text-2xl font-black text-white mb-6">✅ Recently Completed</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="challenge-card rounded-2xl p-6 opacity-75">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h3 class="text-lg font-black text-green-300 mb-1">🏆 Week Warrior</h3>
-                    <p class="text-gray-300 text-sm">Completed 7 workouts in a week</p>
+    {% if completed_challenges %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for user_challenge, challenge in completed_challenges %}
+                <div class="challenge-card rounded-2xl p-6 opacity-75">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-black text-green-300 mb-1">🏆 {{ challenge.name }}</h3>
+                            <p class="text-gray-300 text-sm">{{ challenge.description }}</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-2xl">✅</span>
+                            <p class="text-green-400 text-sm mt-1">+{{ challenge.points_reward }} pts</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-center">
-                    <span class="text-2xl">✅</span>
-                    <p class="text-green-400 text-sm mt-1">+200 pts</p>
-                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="challenge-card rounded-2xl p-8">
+            <div class="text-center">
+                <span class="text-5xl mb-4 block">🏆</span>
+                <p class="text-gray-300 font-bold">No completed challenges yet. Keep working to earn your first badge!</p>
             </div>
         </div>
-
-        <div class="challenge-card rounded-2xl p-6 opacity-75">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h3 class="text-lg font-black text-blue-300 mb-1">💧 Hydration Hero</h3>
-                    <p class="text-gray-300 text-sm">Drank 8 glasses of water daily for 14 days</p>
-                </div>
-                <div class="text-center">
-                    <span class="text-2xl">✅</span>
-                    <p class="text-blue-400 text-sm mt-1">+150 pts</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -95,52 +95,52 @@
 
         <div class="grid grid-cols-7 gap-2">
             <div class="text-center">
-                <div class="day-badge bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-xl">
+                <div class="day-badge {% if weekly_workouts.monday %}bg-gradient-to-r from-blue-500 to-purple-500{% else %}bg-gray-600 opacity-50{% endif %} p-3 rounded-xl">
                     <p class="text-white font-black">MON</p>
                     <p class="text-2xl mt-1">💪</p>
-                    <p class="text-xs text-gray-200">Upper Body</p>
+                    <p class="text-xs text-gray-200">{% if weekly_workouts.monday %}{{ weekly_workouts.monday }}{% else %}Rest{% endif %}</p>
                 </div>
             </div>
             <div class="text-center">
-                <div class="day-badge bg-gradient-to-r from-green-500 to-blue-500 p-3 rounded-xl">
+                <div class="day-badge {% if weekly_workouts.tuesday %}bg-gradient-to-r from-green-500 to-blue-500{% else %}bg-gray-600 opacity-50{% endif %} p-3 rounded-xl">
                     <p class="text-white font-black">TUE</p>
                     <p class="text-2xl mt-1">🦵</p>
-                    <p class="text-xs text-gray-200">Lower Body</p>
+                    <p class="text-xs text-gray-200">{% if weekly_workouts.tuesday %}{{ weekly_workouts.tuesday }}{% else %}Rest{% endif %}</p>
                 </div>
             </div>
             <div class="text-center">
-                <div class="day-badge bg-gradient-to-r from-orange-500 to-red-500 p-3 rounded-xl">
+                <div class="day-badge {% if weekly_workouts.wednesday %}bg-gradient-to-r from-orange-500 to-red-500{% else %}bg-gray-600 opacity-50{% endif %} p-3 rounded-xl">
                     <p class="text-white font-black">WED</p>
                     <p class="text-2xl mt-1">🏃</p>
-                    <p class="text-xs text-gray-200">Cardio</p>
+                    <p class="text-xs text-gray-200">{% if weekly_workouts.wednesday %}{{ weekly_workouts.wednesday }}{% else %}Rest{% endif %}</p>
                 </div>
             </div>
             <div class="text-center">
-                <div class="day-badge bg-gray-600 p-3 rounded-xl opacity-50">
+                <div class="day-badge {% if weekly_workouts.thursday %}bg-gradient-to-r from-yellow-500 to-green-500{% else %}bg-gray-600 opacity-50{% endif %} p-3 rounded-xl">
                     <p class="text-white font-black">THU</p>
-                    <p class="text-2xl mt-1">😴</p>
-                    <p class="text-xs text-gray-200">Rest</p>
+                    <p class="text-2xl mt-1">{% if weekly_workouts.thursday %}🎯{% else %}😴{% endif %}</p>
+                    <p class="text-xs text-gray-200">{% if weekly_workouts.thursday %}{{ weekly_workouts.thursday }}{% else %}Rest{% endif %}</p>
                 </div>
             </div>
             <div class="text-center">
-                <div class="day-badge bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-xl">
+                <div class="day-badge {% if weekly_workouts.friday %}bg-gradient-to-r from-purple-500 to-pink-500{% else %}bg-gray-600 opacity-50{% endif %} p-3 rounded-xl">
                     <p class="text-white font-black">FRI</p>
                     <p class="text-2xl mt-1">🧘</p>
-                    <p class="text-xs text-gray-200">Yoga</p>
+                    <p class="text-xs text-gray-200">{% if weekly_workouts.friday %}{{ weekly_workouts.friday }}{% else %}Rest{% endif %}</p>
                 </div>
             </div>
             <div class="text-center">
-                <div class="day-badge bg-gradient-to-r from-red-500 to-orange-500 p-3 rounded-xl">
+                <div class="day-badge {% if weekly_workouts.saturday %}bg-gradient-to-r from-red-500 to-orange-500{% else %}bg-gray-600 opacity-50{% endif %} p-3 rounded-xl">
                     <p class="text-white font-black">SAT</p>
                     <p class="text-2xl mt-1">🥊</p>
-                    <p class="text-xs text-gray-200">Boxing</p>
+                    <p class="text-xs text-gray-200">{% if weekly_workouts.saturday %}{{ weekly_workouts.saturday }}{% else %}Rest{% endif %}</p>
                 </div>
             </div>
             <div class="text-center">
-                <div class="day-badge bg-gradient-to-r from-yellow-500 to-green-500 p-3 rounded-xl">
+                <div class="day-badge {% if weekly_workouts.sunday %}bg-gradient-to-r from-yellow-500 to-green-500{% else %}bg-gray-600 opacity-50{% endif %} p-3 rounded-xl">
                     <p class="text-white font-black">SUN</p>
                     <p class="text-2xl mt-1">⚡</p>
-                    <p class="text-xs text-gray-200">HIIT</p>
+                    <p class="text-xs text-gray-200">{% if weekly_workouts.sunday %}{{ weekly_workouts.sunday }}{% else %}Rest{% endif %}</p>
                 </div>
             </div>
         </div>
@@ -150,27 +150,47 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="plan-card rounded-2xl p-6">
             <h3 class="text-xl font-black text-white mb-4">🎯 Today's Workout</h3>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
-                    <span class="text-white">Push-ups</span>
-                    <span class="text-yellow-300 font-black">3x15</span>
+            {% if todays_workout %}
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                        <span class="text-white">{{ todays_workout.workout_type.title() }}</span>
+                        <span class="text-yellow-300 font-black">{{ todays_workout.duration }} min</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                        <span class="text-white">Difficulty</span>
+                        <span class="text-yellow-300 font-black">{{ todays_workout.difficulty.title() }}</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                        <span class="text-white">Completed</span>
+                        <span class="text-yellow-300 font-black">{{ todays_workout.created_at.strftime('%I:%M %p') }}</span>
+                    </div>
                 </div>
-                <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
-                    <span class="text-white">Pull-ups</span>
-                    <span class="text-yellow-300 font-black">3x10</span>
+                <div class="mt-4 p-3 bg-green-500/20 rounded-xl border border-green-500/30">
+                    <p class="text-green-300 font-black text-center">✅ Workout Completed!</p>
                 </div>
-                <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
-                    <span class="text-white">Shoulder Press</span>
-                    <span class="text-yellow-300 font-black">3x12</span>
+            {% else %}
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                        <span class="text-white">Push-ups</span>
+                        <span class="text-yellow-300 font-black">3x15</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                        <span class="text-white">Pull-ups</span>
+                        <span class="text-yellow-300 font-black">3x10</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                        <span class="text-white">Shoulder Press</span>
+                        <span class="text-yellow-300 font-black">3x12</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
+                        <span class="text-white">Bicep Curls</span>
+                        <span class="text-yellow-300 font-black">3x15</span>
+                    </div>
                 </div>
-                <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl">
-                    <span class="text-white">Bicep Curls</span>
-                    <span class="text-yellow-300 font-black">3x15</span>
-                </div>
-            </div>
-            <button class="edit-btn w-full mt-4 bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl">
-                🔥 START WORKOUT
-            </button>
+                <a href="{{ url_for('start_workout') }}" class="edit-btn w-full mt-4 inline-block bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    🔥 START WORKOUT
+                </a>
+            {% endif %}
         </div>
 
         <div class="plan-card rounded-2xl p-6">
@@ -179,28 +199,31 @@
                 <div>
                     <div class="flex justify-between text-sm mb-1">
                         <span class="text-gray-300">Weekly Goal</span>
-                        <span class="text-yellow-300 font-black">5/7 workouts</span>
+                        <span class="text-yellow-300 font-black">{{ user_stats.current_streak or 0 }}/7 workouts</span>
                     </div>
+                    {% set weekly_percent = weekly_percent %}
                     <div class="w-full bg-gray-700 rounded-full h-3">
-                        <div class="bg-gradient-to-r from-yellow-400 to-green-500 h-3 rounded-full" style="width: 71%"></div>
+                        <div class="bg-gradient-to-r from-yellow-400 to-green-500 h-3 rounded-full transition-all duration-500" style="--progress-width: {{ weekly_percent }}%; width: var(--progress-width)"></div>
                     </div>
                 </div>
                 <div>
                     <div class="flex justify-between text-sm mb-1">
                         <span class="text-gray-300">Strength Progress</span>
-                        <span class="text-blue-300 font-black">Level 3</span>
+                        <span class="text-blue-300 font-black">Level {{ user_stats.level or 1 }}</span>
                     </div>
+                    {% set level_percent = level_percent %}
                     <div class="w-full bg-gray-700 rounded-full h-3">
-                        <div class="bg-gradient-to-r from-blue-400 to-purple-500 h-3 rounded-full" style="width: 60%"></div>
+                        <div class="bg-gradient-to-r from-blue-400 to-purple-500 h-3 rounded-full transition-all duration-500" style="--progress-width: {{ level_percent }}%; width: var(--progress-width)"></div>
                     </div>
                 </div>
                 <div>
                     <div class="flex justify-between text-sm mb-1">
                         <span class="text-gray-300">Endurance</span>
-                        <span class="text-green-300 font-black">Good</span>
+                        <span class="text-green-300 font-black">{% if user_stats.total_workouts > 10 %}Excellent{% elif user_stats.total_workouts > 5 %}Good{% else %}Starting{% endif %}</span>
                     </div>
+                    {% set endurance_percent = endurance_percent %}
                     <div class="w-full bg-gray-700 rounded-full h-3">
-                        <div class="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full" style="width: 75%"></div>
+                        <div class="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-500" style="--progress-width: {{ endurance_percent }}%; width: var(--progress-width)"></div>
                     </div>
                 </div>
             </div>
@@ -214,26 +237,29 @@
             <div class="bg-gradient-to-r from-orange-500/20 to-red-500/20 p-4 rounded-xl border border-orange-500/30">
                 <h3 class="font-black text-orange-300 mb-2">🔥 Lose Weight</h3>
                 <p class="text-gray-300 text-sm mb-2">Target: 5kg this month</p>
+                {% set weight_loss_percent = weight_loss_percent %}
                 <div class="w-full bg-gray-700 rounded-full h-2">
-                    <div class="bg-gradient-to-r from-orange-400 to-red-500 h-2 rounded-full" style="width: 40%"></div>
+                    <div class="bg-gradient-to-r from-orange-400 to-red-500 h-2 rounded-full transition-all duration-500" style="--progress-width: {{ weight_loss_percent }}%; width: var(--progress-width)"></div>
                 </div>
-                <p class="text-gray-400 text-xs mt-1">2kg lost</p>
+                <p class="text-gray-400 text-xs mt-1">{{ user_stats.total_points or 0 }} points</p>
             </div>
             <div class="bg-gradient-to-r from-blue-500/20 to-purple-500/20 p-4 rounded-xl border border-blue-500/30">
                 <h3 class="font-black text-blue-300 mb-2">💪 Build Muscle</h3>
                 <p class="text-gray-300 text-sm mb-2">Target: +3kg muscle</p>
+                {% set muscle_gain_percent = muscle_gain_percent %}
                 <div class="w-full bg-gray-700 rounded-full h-2">
-                    <div class="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full" style="width: 25%"></div>
+                    <div class="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full transition-all duration-500" style="--progress-width: {{ muscle_gain_percent }}%; width: var(--progress-width)"></div>
                 </div>
-                <p class="text-gray-400 text-xs mt-1">0.8kg gained</p>
+                <p class="text-gray-400 text-xs mt-1">Level {{ user_stats.level or 1 }}</p>
             </div>
             <div class="bg-gradient-to-r from-green-500/20 to-blue-500/20 p-4 rounded-xl border border-green-500/30">
                 <h3 class="font-black text-green-300 mb-2">⚡ Improve Stamina</h3>
                 <p class="text-gray-300 text-sm mb-2">Target: 5K under 25min</p>
+                {% set stamina_percent = stamina_percent %}
                 <div class="w-full bg-gray-700 rounded-full h-2">
-                    <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full" style="width: 80%"></div>
+                    <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full transition-all duration-500" style="--progress-width: {{ stamina_percent }}%; width: var(--progress-width)"></div>
                 </div>
-                <p class="text-gray-400 text-xs mt-1">Current: 26:30</p>
+                <p class="text-gray-400 text-xs mt-1">Current: {{ "%.1f" | format(user_stats.total_time_minutes or 0) }}min</p>
             </div>
         </div>
     </div>
