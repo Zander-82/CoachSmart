@@ -1,52 +1,130 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - CoachSmart{% endblock %}
+{% block title %}Dashboard - CoachSmart 🔥{% endblock %}
 
 {% block content %}
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
 
-    <!-- Main Content -->
-    <main class="container mx-auto p-4">
-        <div class="max-w-6xl mx-auto">
-            <!-- Welcome Banner -->
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-6 mb-8">
-                <h1 class="text-3xl font-bold mb-2">Welcome back, {{ username }}! 👋</h1>
-                <p class="text-blue-100">Ready for your next training session?</p>
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.dashboard-card {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+.pulsing {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-icon {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+}
+
+.stat-icon:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+
+.action-btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.action-btn:hover::before {
+    left: 100%;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+}
+</style>
+
+<div class="container mx-auto p-8">
+    <!-- Welcome Banner -->
+    <div class="dashboard-card rounded-3xl p-8 mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-5xl font-black mb-4 gradient-text floating">Welcome back, {{ username }}! 🔥</h1>
+                <p class="text-xl text-gray-300">Ready to crush your fitness goals today? 💪</p>
             </div>
+            <div class="text-6xl floating" style="animation-delay: 0.5s;">🏋️‍♀️</div>
+        </div>
+    </div>
 
             <!-- Stats Overview -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-xl shadow p-6">
+                <div class="dashboard-card rounded-2xl p-6">
                     <div class="flex items-center">
-                        <div class="bg-blue-100 p-3 rounded-lg mr-4">
-                            <i class="fas fa-fire text-blue-600 text-xl"></i>
+                        <div class="stat-icon p-4 rounded-2xl mr-4">
+                            <span class="text-3xl floating">🔥</span>
                         </div>
                         <div>
-                            <p class="text-gray-500 text-sm">Current Streak</p>
-                            <p class="text-2xl font-bold">5 days</p>
+                            <p class="text-gray-400 text-sm font-black">CURRENT STREAK</p>
+                            <p class="text-3xl font-black text-yellow-300 pulsing">5 days</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow p-6">
+                <div class="dashboard-card rounded-2xl p-6">
                     <div class="flex items-center">
-                        <div class="bg-green-100 p-3 rounded-lg mr-4">
-                            <i class="fas fa-trophy text-green-600 text-xl"></i>
+                        <div class="stat-icon p-4 rounded-2xl mr-4">
+                            <span class="text-3xl floating" style="animation-delay: 0.2s;">🏆</span>
                         </div>
                         <div>
-                            <p class="text-gray-500 text-sm">Workouts This Week</p>
-                            <p class="text-2xl font-bold">3/5</p>
+                            <p class="text-gray-400 text-sm font-black">WORKOUTS THIS WEEK</p>
+                            <p class="text-3xl font-black text-green-300 pulsing" style="animation-delay: 0.2s;">3/5</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow p-6">
+                <div class="dashboard-card rounded-2xl p-6">
                     <div class="flex items-center">
-                        <div class="bg-purple-100 p-3 rounded-lg mr-4">
-                            <i class="fas fa-bolt text-purple-600 text-xl"></i>
+                        <div class="stat-icon p-4 rounded-2xl mr-4">
+                            <span class="text-3xl floating" style="animation-delay: 0.4s;">⚡</span>
                         </div>
                         <div>
-                            <p class="text-gray-500 text-sm">Next Workout</p>
-                            <p class="text-2xl font-bold">Tomorrow</p>
+                            <p class="text-gray-400 text-sm font-black">NEXT WORKOUT</p>
+                            <p class="text-3xl font-black text-purple-300 pulsing" style="animation-delay: 0.4s;">Tomorrow</p>
                         </div>
                     </div>
                 </div>
@@ -54,69 +132,101 @@
 
             <!-- Quick Actions -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-white rounded-xl shadow p-6">
-                    <h2 class="text-xl font-semibold mb-4">Start a New Workout</h2>
-                    <p class="text-gray-600 mb-4">Begin a new training session with your personalized plan.</p>
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
-                        Start Workout
+                <div class="dashboard-card rounded-2xl p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-4xl mr-4 floating">🚀</span>
+                        <h2 class="text-2xl font-black text-white">START NEW WORKOUT</h2>
+                    </div>
+                    <p class="text-gray-300 mb-6">Begin a new training session with your personalized plan! 💪</p>
+                    <button class="action-btn w-full bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl">
+                        🔥 START WORKOUT
                     </button>
                 </div>
 
-                <div class="bg-white rounded-xl shadow p-6">
-                    <h2 class="text-xl font-semibold mb-4">Your Training Plan</h2>
-                    <p class="text-gray-600 mb-4">View and customize your weekly training schedule.</p>
-                    <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
-                        View Plan
+                <div class="dashboard-card rounded-2xl p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-4xl mr-4 floating" style="animation-delay: 0.2s;">📋</span>
+                        <h2 class="text-2xl font-black text-white">YOUR TRAINING PLAN</h2>
+                    </div>
+                    <p class="text-gray-300 mb-6">View and customize your weekly training schedule! 📅</p>
+                    <button class="action-btn w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-3 px-6 rounded-xl">
+                        📈 VIEW PLAN
                     </button>
                 </div>
             </div>
 
             <!-- Recent Activity -->
-            <div class="bg-white rounded-xl shadow p-6">
+            <div class="dashboard-card rounded-2xl p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold">Recent Activity</h2>
-                    <a href="#" class="text-blue-600 hover:underline">View All</a>
+                    <div class="flex items-center">
+                        <span class="text-3xl mr-3 floating">📊</span>
+                        <h2 class="text-2xl font-black text-white">RECENT ACTIVITY</h2>
+                    </div>
+                    <a href="#" class="text-yellow-300 hover:text-yellow-200 font-black transition-colors">View All →</a>
                 </div>
-                
+
                 <div class="space-y-4">
-                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                        <div class="bg-blue-100 p-2 rounded-full mr-4">
-                            <i class="fas fa-check text-blue-600"></i>
+                    <div class="flex items-center p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30">
+                        <div class="bg-green-500/20 p-3 rounded-full mr-4">
+                            <span class="text-2xl">✅</span>
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium">Completed: Upper Body Workout</p>
-                            <p class="text-sm text-gray-500">Yesterday at 6:30 PM • 45 min</p>
+                            <p class="font-black text-white">Completed: Upper Body Workout</p>
+                            <p class="text-sm text-gray-300">Yesterday at 6:30 PM • 45 min</p>
                         </div>
-                        <span class="text-green-600 font-medium">+120 pts</span>
+                        <span class="text-green-400 font-black text-lg pulsing">+120 pts</span>
                     </div>
 
-                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                        <div class="bg-yellow-100 p-2 rounded-full mr-4">
-                            <i class="fas fa-bullseye text-yellow-600"></i>
+                    <div class="flex items-center p-4 rounded-xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30">
+                        <div class="bg-yellow-500/20 p-3 rounded-full mr-4">
+                            <span class="text-2xl">🎯</span>
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium">New Personal Best: 5K Run</p>
-                            <p class="text-sm text-gray-500">2 days ago • 24:36 min</p>
+                            <p class="font-black text-white">New Personal Best: 5K Run</p>
+                            <p class="text-sm text-gray-300">2 days ago • 24:36 min</p>
                         </div>
-                        <span class="text-green-600 font-medium">+50 pts</span>
+                        <span class="text-yellow-400 font-black text-lg pulsing">+50 pts</span>
                     </div>
 
-                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                        <div class="bg-purple-100 p-2 rounded-full mr-4">
-                            <i class="fas fa-medal text-purple-600"></i>
+                    <div class="flex items-center p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30">
+                        <div class="bg-purple-500/20 p-3 rounded-full mr-4">
+                            <span class="text-2xl">🏅</span>
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium">Achievement Unlocked: Early Bird</p>
-                            <p class="text-sm text-gray-500">3 days ago</p>
+                            <p class="font-black text-white">Achievement Unlocked: Week Warrior</p>
+                            <p class="text-sm text-gray-300">3 days ago • Completed 7 workouts</p>
                         </div>
-                        <span class="text-green-600 font-medium">+30 pts</span>
+                        <span class="text-purple-400 font-black text-lg pulsing">+200 pts</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenges Section -->
+            <div class="dashboard-card rounded-2xl p-6">
+                <div class="flex items-center mb-6">
+                    <span class="text-3xl mr-3 floating" style="animation-delay: 0.3s;">🏆</span>
+                    <h2 class="text-2xl font-black text-white">ACTIVE CHALLENGES</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gradient-to-r from-orange-500/20 to-red-500/20 p-4 rounded-xl border border-orange-500/30">
+                        <h3 class="font-black text-orange-300 mb-2">🔥 30-Day Streak</h3>
+                        <p class="text-gray-300 text-sm mb-2">Keep the fire burning!</p>
+                        <div class="w-full bg-gray-700 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-orange-400 to-red-500 h-3 rounded-full" style="width: 17%"></div>
+                        </div>
+                        <p class="text-gray-400 text-xs mt-1">5/30 days</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-blue-500/20 to-green-500/20 p-4 rounded-xl border border-blue-500/30">
+                        <h3 class="font-black text-blue-300 mb-2">💪 Strength Builder</h3>
+                        <p class="text-gray-300 text-sm mb-2">Complete 20 strength workouts</p>
+                        <div class="w-full bg-gray-700 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-blue-400 to-green-500 h-3 rounded-full" style="width: 40%"></div>
+                        </div>
+                        <p class="text-gray-400 text-xs mt-1">8/20 workouts</p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
-    <footer class="text-center p-4 mt-8 bg-gray-800 text-white">
-        <p>&copy; 2025 CoachSmart. All rights reserved.</p>
-    </footer>
+</div>
 {% endblock %}

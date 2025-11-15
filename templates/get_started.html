@@ -1,115 +1,197 @@
 {% extends "base.html" %}
 
-{% block title %}Get Started - CoachSmart{% endblock %}
+{% block title %}Get Started - CoachSmart 🔥{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto">
-    <h2 class="text-3xl font-bold text-center mb-8">Get Started with CoachSmart</h2>
-    
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
+.auth-card {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.auth-card:hover {
+    transform: translateY(-5px);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.form-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+}
+
+.social-btn {
+    transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+}
+</style>
+
+<div class="container mx-auto p-8">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <h1 class="text-6xl font-black mb-6 gradient-text floating">🏋️‍♀️ Get Fit with CoachSmart 🏋️‍♀️</h1>
+        <p class="text-2xl text-gray-300 mb-8">Join the fitness revolution and start your journey today! 🚀</p>
+    </div>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="p-4 mb-6 text-sm rounded-lg {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
-                    {{ message }}
+                <div class="mb-8 p-4 rounded-2xl {% if category == 'error' %}bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-red-500/50{% else %}bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-500/50{% endif %}">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3">{% if category == 'error' %}<i class="fas fa-times-circle text-red-500"></i>{% else %}<i class="fas fa-check-circle text-green-500"></i>{% endif %}</span>
+                        <p class="text-white font-semibold">{{ message }}</p>
+                    </div>
                 </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
-    
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="md:flex">
-            <!-- Sign Up Form -->
-            <div class="w-full md:w-1/2 p-8 border-b md:border-b-0 md:border-r">
-                <h3 class="text-2xl font-semibold mb-6 text-center">Create an Account</h3>
-                
-                <form action="{{ url_for('signup') }}" method="POST" class="space-y-4">
-                    <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                        <input type="text" id="username" name="username" required 
-                               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+
+    <div class="max-w-5xl mx-auto">
+        <div class="auth-card rounded-3xl overflow-hidden">
+            <div class="md:flex">
+                <!-- Sign Up Form -->
+                <div class="w-full md:w-1/2 p-8 border-b md:border-b-0 md:border-r border-purple-500/30">
+                    <h2 class="text-3xl font-black text-white mb-8 text-center">🎮 CREATE ACCOUNT</h2>
+
+                    <form action="{{ url_for('signup') }}" method="POST" class="space-y-6">
+                        <div>
+                            <label for="username" class="block text-white font-black mb-2">👤 Username</label>
+                            <input type="text" id="username" name="username" required 
+                                   class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-white font-black mb-2">📧 Email</label>
+                            <input type="email" id="email" name="email" required 
+                                   class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <label for="password" class="block text-white font-black mb-2">🔒 Password</label>
+                            <input type="password" id="password" name="password" required 
+                                   class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <label for="confirm_password" class="block text-white font-black mb-2">🔒 Confirm Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required 
+                                   class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none">
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-3 px-6 rounded-xl transition-all transform hover:scale-105">
+                            🚀 SIGN UP
+                        </button>
+                    </form>
+
+                    <div class="mt-8 text-center">
+                        <p class="text-gray-300">Already have an account? <a href="#signin" class="text-yellow-300 hover:text-yellow-200 font-black transition-colors">Sign In! 🔥</a></p>
                     </div>
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                        <input type="email" id="email" name="email" required 
-                               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input type="password" id="password" name="password" required 
-                               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                        <input type="password" id="confirm_password" name="confirm_password" required 
-                               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                        Sign Up
-                    </button>
-                </form>
-                
-                <div class="mt-6 text-center text-sm text-gray-600">
-                    Already have an account? 
-                    <a href="#signin" class="text-blue-500 hover:underline">Sign In</a>
                 </div>
-            </div>
-            
-            <!-- Sign In Form -->
-            <div class="w-full md:w-1/2 p-8" id="signin">
-                <h3 class="text-2xl font-semibold mb-6 text-center">Sign In</h3>
-                
-                <form action="{{ url_for('signin') }}" method="POST" class="space-y-4">
-                    <div>
-                        <label for="signin_email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                        <input type="email" id="signin_email" name="email" required 
-                               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="signin_password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input type="password" id="signin_password" name="password" required 
-                               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <input type="checkbox" id="remember_me" name="remember_me" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <label for="remember_me" class="ml-2 block text-sm text-gray-700">Remember me</label>
+
+                <!-- Sign In Form -->
+                <div class="w-full md:w-1/2 p-8" id="signin">
+                    <h2 class="text-3xl font-black text-white mb-8 text-center">🔐 SIGN IN</h2>
+
+                    <form action="{{ url_for('signin') }}" method="POST" class="space-y-6">
+                        <div>
+                            <label for="signin_email" class="block text-white font-black mb-2">📧 Email</label>
+                            <input type="email" id="signin_email" name="email" required 
+                                   class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none">
                         </div>
-                        <div class="text-sm">
-                            <a href="#" class="font-medium text-blue-500 hover:text-blue-400">Forgot password?</a>
+                        <div>
+                            <label for="signin_password" class="block text-white font-black mb-2">🔒 Password</label>
+                            <input type="password" id="signin_password" name="password" required 
+                                   class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none">
                         </div>
-                    </div>
-                    <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                        Sign In
-                    </button>
-                </form>
-                
-                <div class="mt-6">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="remember_me" name="remember_me" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                <label for="remember_me" class="ml-2 block text-sm text-gray-300">Remember me 💾</label>
+                            </div>
+                            <div class="text-sm">
+                                <a href="#" class="font-black text-yellow-300 hover:text-yellow-200 transition-colors">Forgot password? 🤔</a>
+                            </div>
                         </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl transition-all transform hover:scale-105">
+                            ⚡ SIGN IN
+                        </button>
+                    </form>
+
+                    <div class="mt-8">
+                        <div class="relative">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-purple-500/30"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-4 text-gray-400 font-black">🎮 Or continue with</span>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="mt-6 grid grid-cols-2 gap-3">
-                        <a href="#" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                            <i class="fab fa-google text-red-500 mr-2"></i> Google
-                        </a>
-                        <a href="#" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                            <i class="fab fa-apple text-gray-800 mr-2"></i> Apple
-                        </a>
+
+                        <div class="mt-6 grid grid-cols-2 gap-4">
+                            <a href="#" class="social-btn flex items-center justify-center px-4 py-3 border border-gray-600 rounded-xl text-sm font-black text-gray-300 bg-gray-800/50 hover:bg-gray-700/50">
+                                <i class="fab fa-google text-red-500 mr-2"></i> Google
+                            </a>
+                            <a href="#" class="social-btn flex items-center justify-center px-4 py-3 border border-gray-600 rounded-xl text-sm font-black text-gray-300 bg-gray-800/50 hover:bg-gray-700/50">
+                                <i class="fab fa-apple text-gray-300 mr-2"></i> Apple
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="mt-8 text-center text-sm text-gray-600">
-        By signing up, you agree to our 
-        <a href="#" class="text-blue-500 hover:underline">Terms of Service</a> and 
-        <a href="#" class="text-blue-500 hover:underline">Privacy Policy</a>.
+
+    <!-- Benefits Section -->
+    <div class="mt-16">
+        <div class="auth-card p-8 rounded-3xl">
+            <h2 class="text-3xl font-black text-white mb-8 text-center">🎯 Why Join CoachSmart?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="text-4xl mb-4 floating">🏆</div>
+                    <h3 class="text-xl font-black text-yellow-300 mb-2">Win Prizes</h3>
+                    <p class="text-gray-300">Earn rewards for crushing your goals! 🎁</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-4 floating" style="animation-delay: 0.2s;">👥</div>
+                    <h3 class="text-xl font-black text-yellow-300 mb-2">Team Up</h3>
+                    <p class="text-gray-300">Challenge friends and climb leaderboards! 🏅</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-4 floating" style="animation-delay: 0.4s;">📈</div>
+                    <h3 class="text-xl font-black text-yellow-300 mb-2">Level Up</h3>
+                    <p class="text-gray-300">Track progress and unlock achievements! 🚀</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms -->
+    <div class="mt-8 text-center text-sm text-gray-400">
+        <p>By signing up, you agree to our <a href="#" class="text-yellow-300 hover:text-yellow-200 font-black transition-colors">Terms of Service</a> and <a href="#" class="text-yellow-300 hover:text-yellow-200 font-black transition-colors">Privacy Policy</a> 📜</p>
     </div>
 </div>
 {% endblock %}

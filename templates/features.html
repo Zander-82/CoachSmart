@@ -3,51 +3,173 @@
 {% block title %}Features - CoachSmart{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-3xl font-bold mb-6">Features</h2>
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.feature-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.feature-card:hover::before {
+    left: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px) rotateX(5deg);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.feature-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.glow-button {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.glow-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.glow-button:hover::before {
+    left: 100%;
+}
+
+.glow-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(255,107,107,0.4);
+}
+
+.feature-grid {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 2px;
+}
+
+.feature-grid-inner {
+    background: #1a1a2e;
+    border-radius: 18px;
+    padding: 2rem;
+}
+</style>
+
+<div class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <h1 class="text-6xl font-black mb-4 gradient-text animate-pulse">🔥 LEVEL UP YOUR FITNESS 🔥</h1>
+        <p class="text-2xl text-gray-300 mb-8">Transform your workout game with these epic features</p>
+    </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-blue-50 p-6 rounded-lg">
-            <i class="fas fa-dumbbell text-4xl text-blue-500 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">Training Plans</h3>
-            <p class="text-gray-600">Customized training plans tailored to your goals and fitness level.</p>
-        </div>
-        
-        <div class="bg-green-50 p-6 rounded-lg">
-            <i class="fas fa-chart-line text-4xl text-green-500 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">Progress Tracking</h3>
-            <p class="text-gray-600">Monitor your improvements with detailed analytics and statistics.</p>
-        </div>
-        
-        <div class="bg-purple-50 p-6 rounded-lg">
-            <i class="fas fa-robot text-4xl text-purple-500 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">AI Feedback</h3>
-            <p class="text-gray-600">Get instant feedback on your form and technique using AI.</p>
-        </div>
-        
-        <div class="bg-yellow-50 p-6 rounded-lg">
-            <i class="fas fa-calendar-alt text-4xl text-yellow-500 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">Workout Scheduling</h3>
-            <p class="text-gray-600">Plan and schedule your workouts with our intuitive calendar.</p>
-        </div>
-        
-        <div class="bg-red-50 p-6 rounded-lg">
-            <i class="fas fa-utensils text-4xl text-red-500 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">Nutrition Guidance</h3>
-            <p class="text-gray-600">Get personalized nutrition advice to complement your training.</p>
-        </div>
-        
-        <div class="bg-indigo-50 p-6 rounded-lg">
-            <i class="fas fa-users text-4xl text-indigo-500 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">Community Support</h3>
-            <p class="text-gray-600">Connect with other athletes and share your journey.</p>
+    <!-- Features Grid -->
+    <div class="feature-grid max-w-7xl mx-auto mb-12">
+        <div class="feature-grid-inner">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Training Plans -->
+                <div class="feature-card p-8 rounded-2xl text-white">
+                    <div class="feature-icon text-6xl mb-4">💪</div>
+                    <h3 class="text-2xl font-bold mb-3">Training Plans</h3>
+                    <p class="text-gray-200">Custom workouts that adapt to your level and crush your goals 💯</p>
+                    <div class="mt-4 text-sm text-gray-300">⚡ Personalized • 🎯 Goal-oriented • 📈 Progressive</div>
+                </div>
+                
+                <!-- Progress Tracking -->
+                <div class="feature-card p-8 rounded-2xl text-white">
+                    <div class="feature-icon text-6xl mb-4" style="animation-delay: 0.5s;">📊</div>
+                    <h3 class="text-2xl font-bold mb-3">Progress Tracking</h3>
+                    <p class="text-gray-200">Watch your stats skyrocket with detailed analytics and insights 🚀</p>
+                    <div class="mt-4 text-sm text-gray-300">📈 Analytics • 🏆 Achievements • 📱 Real-time</div>
+                </div>
+                
+                <!-- AI Feedback -->
+                <div class="feature-card p-8 rounded-2xl text-white">
+                    <div class="feature-icon text-6xl mb-4" style="animation-delay: 1s;">🤖</div>
+                    <h3 class="text-2xl font-bold mb-3">AI Coach</h3>
+                    <p class="text-gray-200">Your personal AI trainer gives instant feedback on your form 🔥</p>
+                    <div class="mt-4 text-sm text-gray-300">🧠 Smart • ⚡ Instant • 🎯 Precision</div>
+                </div>
+                
+                <!-- Workout Scheduling -->
+                <div class="feature-card p-8 rounded-2xl text-white">
+                    <div class="feature-icon text-6xl mb-4" style="animation-delay: 1.5s;">📅</div>
+                    <h3 class="text-2xl font-bold mb-3">Workout Scheduler</h3>
+                    <p class="text-gray-200">Never miss a session with smart scheduling and reminders ⏰</p>
+                    <div class="mt-4 text-sm text-gray-300">📆 Smart • 🔔 Reminders • 🎯 Flexible</div>
+                </div>
+                
+                <!-- Nutrition Guidance -->
+                <div class="feature-card p-8 rounded-2xl text-white">
+                    <div class="feature-icon text-6xl mb-4" style="animation-delay: 2s;">🥗</div>
+                    <h3 class="text-2xl font-bold mb-3">Fuel Guide</h3>
+                    <p class="text-gray-200">Eat like a champion with personalized nutrition plans 🍕💪</p>
+                    <div class="mt-4 text-sm text-gray-300">🥦 Meal Plans • 💊 Supplements • 🎯 Goals</div>
+                </div>
+                
+                <!-- Community Support -->
+                <div class="feature-card p-8 rounded-2xl text-white">
+                    <div class="feature-icon text-6xl mb-4" style="animation-delay: 2.5s;">👥</div>
+                    <h3 class="text-2xl font-bold mb-3">Squad Goals</h3>
+                    <p class="text-gray-200">Join the crew, share wins, and stay motivated together 🤝</p>
+                    <div class="mt-4 text-sm text-gray-300">🏆 Challenges • 💬 Chat • 🎉 Celebrations</div>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="mt-10 text-center">
-        <a href="{{ url_for('get_started') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg inline-flex items-center transition duration-200">
-            <i class="fas fa-plus mr-2"></i> Get Started
+    <!-- CTA Section -->
+    <div class="text-center">
+        <div class="mb-8">
+            <h2 class="text-4xl font-black text-white mb-4">Ready to crush it? 💪</h2>
+            <p class="text-xl text-gray-300 mb-8">Join thousands of teens leveling up their fitness game</p>
+        </div>
+        
+        <a href="{{ url_for('get_started') }}" class="glow-button text-white font-black text-xl py-4 px-8 rounded-full inline-flex items-center">
+            <span class="mr-2">🚀</span> START YOUR JOURNEY
+            <span class="ml-2">🔥</span>
         </a>
+        
+        <div class="mt-8 text-gray-400">
+            <p>⚡ No credit card required • 🎮 Gamified experience • 🏆 Win prizes</p>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,40 +1,104 @@
 {% extends "base.html" %}
 
-{% block title %}CoachSmart - Your Training Companion{% endblock %}
+{% block title %}CoachSmart - Level Up Your Fitness! 🔥{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-lg shadow-md p-6 text-center">
-    <h2 class="text-3xl font-bold mb-4">Welcome to CoachSmart</h2>
-    <p class="text-gray-600 mb-6">Your personal sports training planner with AI-powered feedback</p>
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.hero-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.hero-card:hover::before {
+    left: 100%;
+}
+
+.hero-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+</style>
+
+<div class="min-h-screen flex flex-col justify-center items-center p-8">
+    <!-- Hero Section -->
+    <div class="text-center mb-16">
+        <h1 class="text-7xl font-black mb-6 gradient-text floating">🔥 COACHSMART 🔥</h1>
+        <p class="text-3xl text-gray-300 mb-8">Your AI-Powered Fitness Companion</p>
+        <p class="text-xl text-gray-400 mb-12">Level up your workout game with personalized training plans! 🚀</p>
+    </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-        <div class="bg-blue-50 p-6 rounded-lg">
-            <i class="fas fa-dumbbell text-4xl text-blue-500 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">Personalized Plans</h3>
-            <p class="text-gray-600">Get customized training plans tailored to your goals</p>
+    <!-- Feature Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+        <div class="hero-card p-8 rounded-3xl text-white text-center">
+            <div class="text-6xl mb-6 floating" style="animation-delay: 0.2s;">💪</div>
+            <h3 class="text-2xl font-black mb-4">Custom Plans</h3>
+            <p class="text-gray-200 text-lg">Workouts that adapt to your goals and crush your limits 💯</p>
         </div>
-        <div class="bg-green-50 p-6 rounded-lg">
-            <i class="fas fa-chart-line text-4xl text-green-500 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">Track Progress</h3>
-            <p class="text-gray-600">Monitor your improvements over time</p>
+        
+        <div class="hero-card p-8 rounded-3xl text-white text-center">
+            <div class="text-6xl mb-6 floating" style="animation-delay: 0.4s;">📊</div>
+            <h3 class="text-2xl font-black mb-4">Track Progress</h3>
+            <p class="text-gray-200 text-lg">Watch your stats skyrocket with detailed analytics 🚀</p>
         </div>
-        <div class="bg-purple-50 p-6 rounded-lg">
-            <i class="fas fa-robot text-4xl text-purple-500 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">AI Feedback</h3>
-            <p class="text-gray-600">Get personalized feedback on your training</p>
+        
+        <div class="hero-card p-8 rounded-3xl text-white text-center">
+            <div class="text-6xl mb-6 floating" style="animation-delay: 0.6s;">🤖</div>
+            <h3 class="text-2xl font-black mb-4">AI Coach</h3>
+            <p class="text-gray-200 text-lg">Get instant feedback and level up your technique 🔥</p>
         </div>
     </div>
 
-    <div class="mt-10">
+    <!-- CTA Section -->
+    <div class="text-center">
+        <div class="mb-8">
+            <h2 class="text-4xl font-black text-white mb-4">Ready to crush it? 💪</h2>
+            <p class="text-xl text-gray-300 mb-8">Join thousands of teens leveling up their fitness</p>
+        </div>
+        
         {% if 'user_id' in session %}
-        <a href="{{ url_for('dashboard') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg inline-flex items-center transition duration-200">
-            <i class="fas fa-tachometer-alt mr-2"></i> Go to Dashboard
+        <a href="{{ url_for('dashboard') }}" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black text-xl py-4 px-8 rounded-full inline-flex items-center transition-all transform hover:scale-105">
+            <span class="mr-2">🎮</span> Go to Dashboard
+            <span class="ml-2">🚀</span>
         </a>
         {% else %}
-        <a href="{{ url_for('get_started') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg inline-flex items-center transition duration-200">
-            <i class="fas fa-plus mr-2"></i> Get Started
+        <a href="{{ url_for('get_started') }}" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black text-xl py-4 px-8 rounded-full inline-flex items-center transition-all transform hover:scale-105">
+            <span class="mr-2">🚀</span> START YOUR JOURNEY
+            <span class="ml-2">🔥</span>
         </a>
         {% endif %}
+        
+        <div class="mt-8 text-gray-400">
+            <p>⚡ No credit card required • 🎮 Gamified experience • 🏆 Win prizes</p>
+        </div>
     </div>
 </div>
 {% endblock %}
