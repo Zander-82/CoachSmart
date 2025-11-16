@@ -35,165 +35,919 @@
     animation: pulse 2s ease-in-out infinite;
 }
 
-.gradient-text {
-    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.workout-btn {
+.category-header {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.2) 0%, transparent 100%);
+    border-left: 4px solid #667eea;
+    cursor: pointer;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    user-select: none;
 }
 
-.workout-btn::before {
-    content: '';
-    position: absolute;
+.category-header:hover {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.3) 0%, transparent 100%);
+    transform: translateX(5px);
+}
+
+.category-header.active {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.4) 0%, transparent 100%);
+    border-left-color: #8b5cf6;
+}
+
+.recommended-badge {
+    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.workout-details {
+    display: none;
+    position: fixed;
     top: 0;
-    left: -100%;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    overflow-y: auto;
 }
 
-.workout-btn:hover::before {
-    left: 100%;
+.workout-details.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.workout-btn:hover {
-    transform: translateY(-3px) scale(1.05);
+.details-content {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    border: 2px solid rgba(102, 126, 234, 0.5);
+    border-radius: 2rem;
+    padding: 3rem;
+    max-width: 600px;
+    width: 90%;
+    backdrop-filter: blur(20px);
+    position: relative;
+}
+
+.close-details {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-details:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.category-content {
+    display: none;
+}
+
+.category-content.active {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.expand-icon {
+    transition: transform 0.3s ease;
+}
+
+.category-header.active .expand-icon {
+    transform: rotate(90deg);
 }
 </style>
 
-<div class="container mx-auto p-8">
+<div class="min-h-screen p-4 md:p-8">
     <!-- Header -->
     <div class="text-center mb-8">
-        <h1 class="text-5xl font-black mb-4 gradient-text floating">🔥 START YOUR WORKOUT</h1>
-        <p class="text-xl text-gray-300">Choose your training session! 💪</p>
+        <h1 class="text-5xl font-black mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent floating">🔥 START WORKOUT</h1>
+        <p class="text-xl text-gray-300">Choose your perfect workout! 💪</p>
+        
+        <!-- View Custom Workouts Button -->
+        {% if custom_workouts %}
+        <div class="mt-6">
+            <a href="{{ url_for('my_custom_workouts') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                View My Custom Workouts ({{ custom_workouts|length }})
+            </a>
+        </div>
+        {% endif %}
     </div>
 
-    <!-- Workout Options -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <form action="{{ url_for('complete_workout') }}" method="POST" class="workout-card rounded-2xl p-6">
+    <!-- Recommended Section -->
+    {% if workout_preferences.workout_count > 0 %}
+    <div class="workout-card rounded-2xl p-6 mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-3xl font-black text-white">⭐ RECOMMENDED FOR YOU</h2>
+            <span class="recommended-badge px-3 py-1 rounded-full text-white text-sm font-black">PERSONALIZED</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Based on favorite type -->
+            <div class="workout-card rounded-2xl p-6 border-2 border-yellow-500/50 cursor-pointer" onclick="showRecommendedDetails('favorite', '{{ workout_preferences.favorite_type }} Pro', 45, '{{ workout_preferences.preferred_difficulty }}')">
                 <div class="text-center mb-4">
-                    <span class="text-5xl floating">💪</span>
-                    <h3 class="text-2xl font-black text-white mt-4">Upper Body</h3>
-                    <p class="text-gray-300 mt-2">Chest, Arms & Back</p>
+                    <span class="text-5xl floating">⭐</span>
+                    <h3 class="text-2xl font-black text-white mt-4">{{ workout_preferences.favorite_type }} Pro</h3>
+                    <p class="text-gray-300 mt-2">Your favorite workout type</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">45 min • {{ workout_preferences.preferred_difficulty }}</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+            <!-- Level-appropriate workout -->
+            <div class="workout-card rounded-2xl p-6 border-2 border-blue-500/50 cursor-pointer" onclick="showRecommendedDetails('level', 'Level {{ user_stats.level or 1 }} Challenge', '{{ 30 + (user_stats.level or 1) * 5 }}', 'Medium')">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.2s;">📈</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Level {{ user_stats.level or 1 }} Challenge</h3>
+                    <p class="text-gray-300 mt-2">Perfect for your current level</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">{{ 30 + (user_stats.level or 1) * 5 }} min • Medium</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+            <!-- Goal-based workout -->
+            <div class="workout-card rounded-2xl p-6 border-2 border-green-500/50 cursor-pointer" onclick="showRecommendedDetails('goal', 'Goal Crusher', 60, 'Hard')">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.4s;">🎯</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Goal Crusher</h3>
+                    <p class="text-gray-300 mt-2">Based on your training plan</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">60 min • Hard</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- STRENGTH TRAINING CATEGORY -->
+    <div class="mb-8">
+        <div id="header-strength" class="category-header rounded-l-xl p-4 mb-4" onclick="toggleCategory('strength')">
+            <h2 class="text-2xl font-black text-white flex items-center">
+                <span class="expand-icon text-3xl mr-3">▶</span>
+                <span class="text-3xl mr-3">💪</span>
+                STRENGTH TRAINING
+            </h2>
+        </div>
+        <div id="strength" class="category-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Upper Body Power', 45, 'Medium', 'Build upper body strength with targeted exercises for chest, back, arms and shoulders. This comprehensive workout uses compound movements to maximize muscle growth and functional strength.', ['Push-ups - 3 sets x 12 reps', 'Pull-ups - 3 sets x 8 reps', 'Shoulder Press - 3 sets x 10 reps', 'Bench Press - 3 sets x 8 reps', 'Bent-over Rows - 3 sets x 10 reps', 'Bicep Curls - 3 sets x 12 reps', 'Tricep Dips - 3 sets x 10 reps'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating">🦾</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Upper Body Power</h3>
+                    <p class="text-gray-300 mt-2">Chest, Back, Arms & Shoulders</p>
                 </div>
                 <div class="text-center">
                     <span class="text-sm text-gray-400">45 min • Medium</span>
                 </div>
-                <input type="hidden" name="workout_type" value="Upper Body">
-                <input type="hidden" name="duration" value="45">
-                <input type="hidden" name="difficulty" value="Medium">
-                <button type="submit" class="workout-btn w-full mt-4 bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl">
-                    START NOW
-                </button>
-            </form>
+                <div class="w-full mt-4 bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
 
-        <form action="{{ url_for('complete_workout') }}" method="POST" class="workout-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-5xl floating" style="animation-delay: 0.2s;">🦵</span>
-                <h3 class="text-2xl font-black text-white mt-4">Lower Body</h3>
-                <p class="text-gray-300 mt-2">Legs & Glutes</p>
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Lower Body Blast', 40, 'Hard', 'Intense lower body workout focusing on legs, glutes and core. Build powerful legs and improve overall lower body strength with challenging compound movements.', ['Squats - 4 sets x 15 reps', 'Deadlifts - 4 sets x 8 reps', 'Lunges - 3 sets x 12 reps per leg', 'Leg Press - 4 sets x 12 reps', 'Calf Raises - 4 sets x 15 reps', 'Glute Bridges - 3 sets x 15 reps', 'Plank - 3 sets x 45 seconds'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.2s;">🦵</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Lower Body Blast</h3>
+                    <p class="text-gray-300 mt-2">Legs, Glutes & Core</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">40 min • Hard</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
             </div>
-            <div class="text-center">
-                <span class="text-sm text-gray-400">40 min • Hard</span>
-            </div>
-            <input type="hidden" name="workout_type" value="Lower Body">
-            <input type="hidden" name="duration" value="40">
-            <input type="hidden" name="difficulty" value="Hard">
-            <button type="submit" class="workout-btn w-full mt-4 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-3 px-6 rounded-xl">
-                START NOW
-            </button>
-        </form>
 
-        <form action="{{ url_for('complete_workout') }}" method="POST" class="workout-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-5xl floating" style="animation-delay: 0.4s;">🏃</span>
-                <h3 class="text-2xl font-black text-white mt-4">Cardio Blast</h3>
-                <p class="text-gray-300 mt-2">HIIT & Cardio</p>
-            </div>
-            <div class="text-center">
-                <span class="text-sm text-gray-400">30 min • Intense</span>
-            </div>
-            <input type="hidden" name="workout_type" value="Cardio Blast">
-            <input type="hidden" name="duration" value="30">
-            <input type="hidden" name="difficulty" value="Intense">
-            <button type="submit" class="workout-btn w-full mt-4 bg-gradient-to-r from-orange-400 to-red-500 hover:from-orange-500 hover:to-red-600 text-white font-black py-3 px-6 rounded-xl">
-                START NOW
-            </button>
-        </form>
-
-        <form action="{{ url_for('complete_workout') }}" method="POST" class="workout-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-5xl floating" style="animation-delay: 0.6s;">🧘</span>
-                <h3 class="text-2xl font-black text-white mt-4">Yoga Flow</h3>
-                <p class="text-gray-300 mt-2">Flexibility & Balance</p>
-            </div>
-            <div class="text-center">
-                <span class="text-sm text-gray-400">35 min • Easy</span>
-            </div>
-            <input type="hidden" name="workout_type" value="Yoga Flow">
-            <input type="hidden" name="duration" value="35">
-            <input type="hidden" name="difficulty" value="Easy">
-            <button type="submit" class="workout-btn w-full mt-4 bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-black py-3 px-6 rounded-xl">
-                START NOW
-            </button>
-        </form>
-
-        <form action="{{ url_for('complete_workout') }}" method="POST" class="workout-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-5xl floating" style="animation-delay: 0.8s;">🥊</span>
-                <h3 class="text-2xl font-black text-white mt-4">Boxing</h3>
-                <p class="text-gray-300 mt-2">Punches & Combos</p>
-            </div>
-            <div class="text-center">
-                <span class="text-sm text-gray-400">50 min • Hard</span>
-            </div>
-            <input type="hidden" name="workout_type" value="Boxing">
-            <input type="hidden" name="duration" value="50">
-            <input type="hidden" name="difficulty" value="Hard">
-            <button type="submit" class="workout-btn w-full mt-4 bg-gradient-to-r from-red-400 to-orange-500 hover:from-red-500 hover:to-orange-600 text-white font-black py-3 px-6 rounded-xl">
-                START NOW
-            </button>
-        </form>
-
-        <form action="{{ url_for('complete_workout') }}" method="POST" class="workout-card rounded-2xl p-6">
-            <div class="text-center mb-4">
-                <span class="text-5xl floating" style="animation-delay: 1s;">⚡</span>
-                <h3 class="text-2xl font-black text-white mt-4">Quick HIIT</h3>
-                <p class="text-gray-300 mt-2">Full Body Burn</p>
-            </div>
-            <div class="text-center">
-                <span class="text-sm text-gray-400">20 min • Intense</span>
-            </div>
-            <input type="hidden" name="workout_type" value="Quick HIIT">
-            <input type="hidden" name="duration" value="20">
-            <input type="hidden" name="difficulty" value="Intense">
-            <button type="submit" class="workout-btn w-full mt-4 bg-gradient-to-r from-yellow-400 to-green-500 hover:from-yellow-500 hover:to-green-600 text-white font-black py-3 px-6 rounded-xl">
-                START NOW
-            </button>
-        </form>
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Full Body Strength', 50, 'Hard', 'Complete full-body workout targeting all major muscle groups. Perfect for building overall strength and maximizing calorie burn with compound exercises.', ['Burpees - 3 sets x 8 reps', 'Push-ups - 3 sets x 12 reps', 'Squats - 4 sets x 15 reps', 'Pull-ups - 3 sets x 8 reps', 'Deadlifts - 4 sets x 8 reps', 'Shoulder Press - 3 sets x 10 reps', 'Plank - 3 sets x 60 seconds'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.4s;">⚡</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Full Body Strength</h3>
+                    <p class="text-gray-300 mt-2">Complete Muscle Workout</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">50 min • Hard</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-red-400 to-orange-500 hover:from-red-500 hover:to-orange-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+        </div>
+        </div>
     </div>
 
-    <!-- Quick Start Section -->
-    <div class="workout-card rounded-2xl p-8">
-        <h2 class="text-3xl font-black text-white mb-6 text-center"> QUICK START</h2>
-        <div class="text-center">
-            <p class="text-gray-300 mb-6">Don't have time? Try a quick workout!</p>
-            <form action="{{ url_for('complete_workout') }}" method="POST">
-                <input type="hidden" name="workout_type" value="10 Min Express">
-                <input type="hidden" name="duration" value="10">
-                <input type="hidden" name="difficulty" value="Easy">
-                <button type="submit" class="workout-btn bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white font-black py-4 px-8 rounded-xl text-lg">
-                    🚀 10 MIN EXPRESS WORKOUT
-                </button>
-            </form>
+    <!-- MIND & BODY CATEGORY -->
+    <div class="mb-8">
+        <div id="header-mind" class="category-header rounded-l-xl p-4 mb-4" onclick="toggleCategory('mind')">
+            <h2 class="text-2xl font-black text-white flex items-center">
+                <span class="expand-icon text-3xl mr-3">▶</span>
+                <span class="text-3xl mr-3">🧘</span>
+                MIND & BODY
+            </h2>
+        </div>
+        <div id="mind" class="category-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Yoga Flow', 45, 'Easy', 'Gentle yoga practice focusing on flexibility, balance, and mindfulness. Perfect for stress relief and improving mind-body connection through flowing movements.', ['Sun Salutation A - 5 rounds', 'Warrior I sequence - 10 minutes', 'Tree pose - 3 minutes each side', 'Seated forward bend - 5 minutes', 'Child\'s pose - 3 minutes', 'Savasana - 10 minutes'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating">🧘‍♀️</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Yoga Flow</h3>
+                    <p class="text-gray-300 mt-2">Flexibility & Mindfulness</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">45 min • Easy</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Pilates Core', 30, 'Medium', 'Core-focused Pilates workout that strengthens deep abdominal muscles, improves posture, and enhances overall body stability through controlled movements.', ['Warm-up - 5 minutes', 'The Hundred - 5 minutes', 'Rolling exercises - 5 minutes', 'Leg circles - 5 minutes each side', 'Plank variations - 5 minutes', 'Cool-down - 5 minutes'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.2s;">🤸</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Pilates Core</h3>
+                    <p class="text-gray-300 mt-2">Core Strength & Stability</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">30 min • Medium</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-blue-400 to-green-500 hover:from-blue-500 hover:to-green-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Meditation & Stretch', 20, 'Easy', 'Gentle stretching combined with guided meditation to reduce stress, improve flexibility, and promote mental clarity and relaxation.', ['Breathing exercises - 3 minutes', 'Neck and shoulder stretches - 5 minutes', 'Full body stretches - 7 minutes', 'Guided meditation - 5 minutes'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.4s;">🕉️</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Meditation & Stretch</h3>
+                    <p class="text-gray-300 mt-2">Relaxation & Flexibility</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">20 min • Easy</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- CARDIO & ENDURANCE CATEGORY -->
+    <div class="mb-8">
+        <div id="header-cardio" class="category-header rounded-l-xl p-4 mb-4" onclick="toggleCategory('cardio')">
+            <h2 class="text-2xl font-black text-white flex items-center">
+                <span class="expand-icon text-3xl mr-3">▶</span>
+                <span class="text-3xl mr-3">🏃</span>
+                CARDIO & ENDURANCE
+            </h2>
+        </div>
+        <div id="cardio" class="category-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('HIIT Cardio Blast', 30, 'Hard', 'High-intensity interval training that maximizes calorie burn through alternating periods of intense exercise and recovery. Perfect for improving cardiovascular fitness and burning fat efficiently.', ['Warm-up - 5 minutes', 'Jumping Jacks - 45 seconds', 'Rest - 15 seconds', 'High Knees - 45 seconds', 'Rest - 15 seconds', 'Burpees - 30 seconds', 'Rest - 30 seconds', 'Mountain Climbers - 45 seconds', 'Rest - 15 seconds', 'Repeat circuit 4 times', 'Cool-down - 5 minutes'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating">🔥</span>
+                    <h3 class="text-2xl font-black text-white mt-4">HIIT Cardio Blast</h3>
+                    <p class="text-gray-300 mt-2">High-Intensity Intervals</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">30 min • Hard</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-orange-400 to-red-500 hover:from-orange-500 hover:to-red-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Runner\'s High', 35, 'Medium', 'Dynamic running workout with varied intensities to simulate outdoor terrain changes. Includes intervals and tempo runs to improve speed and endurance.', ['Warm-up walk - 5 minutes', 'Easy jog - 10 minutes', 'Tempo run - 10 minutes at threshold pace', 'Recovery jog - 5 minutes', 'Strides - 4 x 100 meters', 'Cool-down walk - 5 minutes'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.2s;">🏃‍♀️</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Runner's High</h3>
+                    <p class="text-gray-300 mt-2">Treadmill & Outdoor Running</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">35 min • Medium</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Steady State Run', 45, 'Medium', 'Consistent pace running that builds cardiovascular endurance and mental toughness. Great for beginners and experienced runners looking to improve their base fitness level.', ['Warm-up walk - 5 minutes', 'Easy jog - 30 minutes at conversational pace', 'Cool-down walk - 10 minutes', 'Stretching - 5 minutes'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.2s;">🏃</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Steady State Run</h3>
+                    <p class="text-gray-300 mt-2">Consistent Pace Running</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">45 min • Medium</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-blue-400 to-green-500 hover:from-blue-500 hover:to-green-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Swim Fitness', 40, 'Medium', 'Full-body water workout that builds endurance and strength with zero impact. Perfect for all fitness levels and gentle on joints while providing excellent cardiovascular benefits.', ['Warm-up - 5 minutes easy swimming', 'Freestyle - 4 x 50 meters', 'Backstroke - 4 x 50 meters', 'Breaststroke - 4 x 50 meters', 'Kick drills - 4 x 25 meters', 'Cool-down - 5 minutes easy swimming'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.4s;">🏊</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Swim Fitness</h3>
+                    <p class="text-gray-300 mt-2">Pool Training & Water Resistance</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">40 min • Medium</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SPORTS & ATHLETICS CATEGORY -->
+    <div class="mb-8">
+        <div id="header-sports" class="category-header rounded-l-xl p-4 mb-4" onclick="toggleCategory('sports')">
+            <h2 class="text-2xl font-black text-white flex items-center">
+                <span class="expand-icon text-3xl mr-3">▶</span>
+                <span class="text-3xl mr-3">⚽</span>
+                SPORTS & ATHLETICS
+            </h2>
+        </div>
+        <div id="sports" class="category-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Boxing Training', 50, 'Hard', 'Intense boxing workout combining punches, defense techniques, and footwork drills. Builds cardiovascular endurance, strength, agility, and boxing-specific skills.', ['Warm-up jump rope - 5 minutes', 'Shadow boxing - 10 minutes', 'Heavy bag work - 15 minutes', 'Speed bag - 10 minutes', 'Defense drills - 5 minutes', 'Cool-down - 5 minutes'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating">🥊</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Boxing Training</h3>
+                    <p class="text-gray-300 mt-2">Punches, Defense & Footwork</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">50 min • Hard</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-red-400 to-orange-500 hover:from-red-500 hover:to-orange-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Basketball Drills', 45, 'Medium', 'Basketball-specific training focusing on shooting, dribbling, and footwork. Improves agility, coordination, and basketball skills through structured drills.', ['Warm-up lap - 5 minutes', 'Dribbling drills - 10 minutes', 'Shooting practice - 15 minutes', 'Defensive slides - 10 minutes', 'Free throws - 5 minutes', 'Cool-down - 5 minutes'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating">🏀</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Basketball Drills</h3>
+                    <p class="text-gray-300 mt-2">Shooting, Dribbling & Footwork</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">45 min • Medium</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+        </div>
+        </div>
+    </div>
+
+    <!-- QUICK WORKOUTS CATEGORY -->
+    <div class="mb-8">
+        <div id="header-quick" class="category-header rounded-l-xl p-4 mb-4" onclick="toggleCategory('quick')">
+            <h2 class="text-2xl font-black text-white flex items-center">
+                <span class="expand-icon text-3xl mr-3">▶</span>
+                <span class="text-3xl mr-3">⚡</span>
+                QUICK WORKOUTS
+            </h2>
+        </div>
+        <div id="quick" class="category-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Quick HIIT', 20, 'Intense', 'High-intensity interval training designed for maximum results in minimum time. Perfect for busy days when you need an effective workout fast.', ['Warm-up - 2 minutes', 'Burpees - 30 seconds', 'Rest - 15 seconds', 'Mountain climbers - 30 seconds', 'Rest - 15 seconds', 'Jump squats - 30 seconds', 'Rest - 15 seconds', 'Push-ups - 30 seconds', 'Rest - 15 seconds', 'Repeat 3 times', 'Cool-down - 2 minutes'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating">⚡</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Quick HIIT</h3>
+                    <p class="text-gray-300 mt-2">Full Body Burn</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">20 min • Intense</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-orange-400 to-red-500 hover:from-orange-500 hover:to-red-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('10 Min Express', 10, 'Easy', 'Quick full-body workout perfect for busy schedules. Combines cardio and strength exercises for an efficient energy boost.', ['Jumping jacks - 1 minute', 'Push-ups - 30 seconds', 'Squats - 30 seconds', 'Plank - 30 seconds', 'Rest - 30 seconds', 'Repeat circuit 3 times', 'Cool-down - 1 minute'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.2s;">🚀</span>
+                    <h3 class="text-2xl font-black text-white mt-4">10 Min Express</h3>
+                    <p class="text-gray-300 mt-2">Rapid Energy Boost</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">10 min • Easy</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+
+            <div class="workout-card rounded-2xl p-6 cursor-pointer" onclick="showWorkoutDetails('Core Crusher', 15, 'Medium', 'Intense core workout targeting abs, obliques, and lower back. Builds a strong foundation and improves posture with focused core exercises.', ['Plank - 1 minute', 'Crunches - 20 reps', 'Russian twists - 20 reps', 'Leg raises - 15 reps', 'Bicycle crunches - 20 reps', 'Side planks - 30 seconds each side', 'Repeat circuit 2 times'])">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.4s;">💪</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Core Crusher</h3>
+                    <p class="text-gray-300 mt-2">Abs & Core Strength</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">15 min • Medium</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-red-400 to-orange-500 hover:from-red-500 hover:to-orange-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    VIEW DETAILS
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if custom_workouts %}
+    <!-- CUSTOM WORKOUTS DATA -->
+    <script type="application/json" id="custom-workouts-data">
+    {{ custom_workouts|tojson }}
+    </script>
+    
+    <script>
+    // Add custom workouts to their respective sections
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get custom workouts data from JSON script tag
+        var customWorkoutsDataElement = document.getElementById('custom-workouts-data');
+        if (customWorkoutsDataElement) {
+            var customWorkoutsData = JSON.parse(customWorkoutsDataElement.textContent);
+            
+            // Process each custom workout
+            customWorkoutsData.forEach(function(workout) {
+                var sectionId = '';
+                if (workout.workout_type === 'Strength') sectionId = 'strength';
+                else if (workout.workout_type === 'Cardio') sectionId = 'cardio';
+                else if (workout.workout_type === 'Mind & Body') sectionId = 'mind';
+                else if (workout.workout_type === 'Sports') sectionId = 'sports';
+                else if (workout.workout_type === 'Quick') sectionId = 'quick';
+                
+                if (sectionId) {
+                    addCustomWorkoutToSection(sectionId, workout.name, workout.duration_minutes, workout.difficulty, workout.description, JSON.parse(workout.exercises), workout.id);
+                }
+            });
+        }
+    });
+    
+    function addCustomWorkoutToSection(sectionId, name, duration, difficulty, description, exercises, workoutId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            const grid = section.querySelector('.grid');
+            if (grid) {
+                const customCard = document.createElement('div');
+                customCard.className = 'workout-card rounded-2xl p-6 cursor-pointer bg-gradient-to-br from-purple-600 to-blue-600';
+                customCard.onclick = function() {
+                    showWorkoutDetails(name, duration, difficulty, description, exercises);
+                };
+                
+                customCard.innerHTML = 
+                    '<div class="text-center mb-4">' +
+                        '<span class="text-5xl floating" style="animation-delay: 0.8s;">🎨</span>' +
+                        '<h3 class="text-2xl font-black text-white mt-4">' + name + '</h3>' +
+                        '<p class="text-gray-300 mt-2">Custom Workout</p>' +
+                    '</div>' +
+                    '<div class="text-center">' +
+                        '<span class="text-sm text-gray-400">' + duration + ' min • ' + difficulty + '</span>' +
+                    '</div>' +
+                    '<div class="mt-4 space-y-2">' +
+                        '<button onclick="event.stopPropagation(); showWorkoutDetails(\'' + name + '\', ' + duration + ', \'' + difficulty + '\', \'' + description.replace(/'/g, "\\'") + '\', ' + JSON.stringify(exercises).replace(/"/g, '&quot;') + ')" class="w-full bg-gradient-to-r from-purple-400 to-blue-500 hover:from-purple-500 hover:to-blue-600 text-white font-black py-3 px-6 rounded-xl text-center">' +
+                            'VIEW DETAILS' +
+                        '</button>' +
+                        '<button onclick="event.stopPropagation(); startCustomWorkout(' + workoutId + ')" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-black py-3 px-6 rounded-xl text-center">' +
+                            'START WORKOUT' +
+                        '</button>' +
+                    '</div>';
+                
+                grid.appendChild(customCard);
+            }
+        }
+    }
+    
+    function startCustomWorkout(workoutId) {
+        // Get custom workouts data from JSON script tag
+        const workoutsDataElement = document.getElementById('custom-workouts-data');
+        const workoutsData = JSON.parse(workoutsDataElement.textContent);
+        const workout = workoutsData.find(w => w.id === workoutId);
+        
+        // Create a form to start the custom workout
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("complete_workout") }}';
+        
+        // Add custom workout data as hidden inputs
+        if (workout) {
+            const workoutTypeInput = document.createElement('input');
+            workoutTypeInput.type = 'hidden';
+            workoutTypeInput.name = 'workout_type';
+            workoutTypeInput.value = workout.name;
+            form.appendChild(workoutTypeInput);
+            
+            const durationInput = document.createElement('input');
+            durationInput.type = 'hidden';
+            durationInput.name = 'duration';
+            durationInput.value = workout.duration_minutes;
+            form.appendChild(durationInput);
+            
+            const difficultyInput = document.createElement('input');
+            difficultyInput.type = 'hidden';
+            difficultyInput.name = 'difficulty';
+            difficultyInput.value = workout.difficulty;
+            form.appendChild(difficultyInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+    </script>
+    {% endif %}
+
+    <!-- CREATE YOUR OWN WORKOUT CATEGORY -->
+    <div class="mb-8">
+        <div id="header-custom" class="category-header rounded-l-xl p-4 mb-4" onclick="toggleCategory('custom')">
+            <h2 class="text-2xl font-black text-white flex items-center">
+                <span class="expand-icon text-3xl mr-3">▶</span>
+                <span class="text-3xl mr-3">🎨</span>
+                CREATE YOUR OWN WORKOUT
+            </h2>
+        </div>
+        <div id="custom" class="category-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="workout-card rounded-2xl p-6 cursor-pointer bg-gradient-to-br from-purple-600 to-blue-600" onclick="openCustomWorkoutModal()">
+                <div class="text-center mb-4">
+                    <span class="text-5xl floating" style="animation-delay: 0.6s;">🎨</span>
+                    <h3 class="text-2xl font-black text-white mt-4">Custom Workout</h3>
+                    <p class="text-gray-300 mt-2">Design Your Perfect Routine</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-400">Custom Duration • Your Choice</span>
+                </div>
+                <div class="w-full mt-4 bg-gradient-to-r from-purple-400 to-blue-500 hover:from-purple-500 hover:to-blue-600 text-white font-black py-3 px-6 rounded-xl text-center">
+                    CREATE WORKOUT
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 </div>
+
+<!-- Workout Details Modal -->
+<div id="workout-details-modal" class="workout-details">
+    <div id="details-content" class="details-content">
+        <!-- Content will be dynamically inserted here -->
+    </div>
+</div>
+
+<script>
+function toggleCategory(categoryId) {
+    const content = document.getElementById(categoryId);
+    const header = document.getElementById('header-' + categoryId);
+    
+    // Close all other categories
+    document.querySelectorAll('.category-content').forEach(cat => {
+        if (cat.id !== categoryId) {
+            cat.classList.remove('active');
+        }
+    });
+    
+    document.querySelectorAll('.category-header').forEach(head => {
+        if (head.id !== 'header-' + categoryId) {
+            head.classList.remove('active');
+        }
+    });
+    
+    // Toggle current category
+    content.classList.toggle('active');
+    header.classList.toggle('active');
+}
+
+function showWorkoutDetails(workoutType, duration, difficulty, description, exercises) {
+    const detailsModal = document.getElementById('workout-details-modal');
+    const detailsContent = document.getElementById('details-content');
+    
+    detailsContent.innerHTML = `
+        <button class="close-details" onclick="closeWorkoutDetails()">✕</button>
+        <div class="text-center mb-6">
+            <h2 class="text-4xl font-black text-white mb-2">${workoutType}</h2>
+            <div class="flex justify-center gap-4 mb-4">
+                <span class="px-3 py-1 bg-blue-500/30 rounded-full text-white">${duration} minutes</span>
+                <span class="px-3 py-1 bg-purple-500/30 rounded-full text-white">${difficulty}</span>
+            </div>
+        </div>
+        
+        <div class="mb-6">
+            <h3 class="text-2xl font-bold text-white mb-3">About This Workout</h3>
+            <p class="text-gray-300 leading-relaxed">${description}</p>
+        </div>
+        
+        <div class="mb-6">
+            <h3 class="text-2xl font-bold text-white mb-3">Exercises Included</h3>
+            <div class="grid grid-cols-1 gap-2">
+                ${exercises.map(exercise => `
+                    <div class="flex items-center gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span class="text-gray-300">${exercise}</span>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        
+        <div class="mb-6">
+            <h3 class="text-2xl font-bold text-white mb-3">Benefits</h3>
+            <div class="grid grid-cols-1 gap-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-yellow-400">⚡</span>
+                    <span class="text-gray-300">Burns approximately ${Math.round(duration * 8)} calories</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-blue-400">💪</span>
+                    <span class="text-gray-300">Builds strength and endurance</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-purple-400">🎯</span>
+                    <span class="text-gray-300">Suitable for ${difficulty.toLowerCase()} fitness levels</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <form action="{{ url_for('complete_workout') }}" method="POST" class="inline-block">
+                <input type="hidden" name="workout_type" value="${workoutType}">
+                <input type="hidden" name="duration" value="${duration}">
+                <input type="hidden" name="difficulty" value="${difficulty}">
+                <button type="submit" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-4 px-8 rounded-xl text-lg">
+                    🚀 START WORKOUT NOW
+                </button>
+            </form>
+        </div>
+    `;
+    
+    detailsModal.classList.add('active');
+}
+
+function closeWorkoutDetails() {
+    const detailsModal = document.getElementById('workout-details-modal');
+    detailsModal.classList.remove('active');
+}
+
+function showRecommendedDetails(type, workoutName, duration, difficulty) {
+    const detailsModal = document.getElementById('workout-details-modal');
+    const detailsContent = document.getElementById('details-content');
+    
+    // Define workout details based on type
+    let description = '';
+    let exercises = [];
+    
+    if (type === 'favorite') {
+        description = `An advanced ${workoutName.replace(' Pro', '')} workout tailored to your preferences. This session focuses on building strength, endurance, and technique in your favorite workout category.`;
+        exercises = [
+            'Dynamic Warm-up (5 min)',
+            'Main Circuit (30 min)',
+            'Core Strengthening (5 min)',
+            'Cool Down & Stretch (5 min)'
+        ];
+    } else if (type === 'level') {
+        const level = workoutName.match(/Level (\d+)/)[1];
+        description = `A progressive workout designed specifically for Level ${level} athletes. This workout challenges your current abilities while preparing you for the next level.`;
+        exercises = [
+            'Activation & Mobility (5 min)',
+            'Level-Appropriate Strength Work (20 min)',
+            'Skill Development (10 min)',
+            'Conditioning Finisher (5 min)',
+            'Recovery Stretch (5 min)'
+        ];
+    } else if (type === 'goal') {
+        description = 'An intensive goal-oriented workout designed to push your limits and accelerate progress toward your fitness objectives. This high-intensity session combines strength, cardio, and functional movements.';
+        exercises = [
+            'Explosive Warm-up (5 min)',
+            'Strength Complex (15 min)',
+            'HIIT Cardio Circuit (10 min)',
+            'Functional Movement Patterns (7 min)',
+            'Core Power (3 min)',
+            'Active Recovery (5 min)'
+        ];
+    }
+    
+    detailsContent.innerHTML = `
+        <button class="close-details" onclick="closeWorkoutDetails()">✕</button>
+        <div class="text-center mb-6">
+            <h2 class="text-4xl font-black text-white mb-2">${workoutName}</h2>
+            <div class="flex justify-center gap-4 mb-4">
+                <span class="px-3 py-1 bg-blue-500/30 rounded-full text-white">${duration} minutes</span>
+                <span class="px-3 py-1 bg-purple-500/30 rounded-full text-white">${difficulty}</span>
+            </div>
+        </div>
+        
+        <div class="mb-6">
+            <h3 class="text-2xl font-bold text-white mb-3">About This Workout</h3>
+            <p class="text-gray-300 leading-relaxed">${description}</p>
+        </div>
+        
+        <div class="mb-6">
+            <h3 class="text-2xl font-bold text-white mb-3">Workout Structure</h3>
+            <div class="grid grid-cols-1 gap-2">
+                ${exercises.map(exercise => `
+                    <div class="flex items-center gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span class="text-gray-300">${exercise}</span>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-4 rounded-xl mb-4">
+                <p class="font-black text-lg">⭐ RECOMMENDED WORKOUT</p>
+                <p class="text-sm">Personalized for your fitness journey</p>
+            </div>
+            <form action="{{ url_for('complete_workout') }}" method="POST" class="inline-block">
+                <input type="hidden" name="workout_type" value="${workoutName}">
+                <input type="hidden" name="duration" value="${duration}">
+                <input type="hidden" name="difficulty" value="${difficulty}">
+                <button type="submit" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-4 px-8 rounded-xl text-lg">
+                    🚀 START WORKOUT NOW
+                </button>
+            </form>
+        </div>
+    `;
+    
+    detailsModal.classList.add('active');
+}
+
+function openCustomWorkoutModal() {
+    const detailsModal = document.getElementById('workout-details-modal');
+    const detailsContent = document.getElementById('details-content');
+    
+    detailsContent.innerHTML = `
+        <button class="close-details" onclick="closeWorkoutDetails()">✕</button>
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-black text-gray-900 mb-4">Choose Your Workout</h1>
+            <p class="text-xl text-gray-600">Select a workout that matches your fitness goals and energy level today</p>
+            
+            <!-- View Custom Workouts Button -->
+            {% if custom_workouts %}
+            <div class="mt-6">
+                <a href="{{ url_for('my_custom_workouts') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    View My Custom Workouts ({{ custom_workouts|length }})
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <form id="custom-workout-form" class="space-y-4">
+            <div>
+                <label class="block text-white font-bold mb-2">Workout Name</label>
+                <input type="text" id="custom-name" class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400" placeholder="My Custom Workout" required>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-white font-bold mb-2">Duration (minutes)</label>
+                    <input type="number" id="custom-duration" class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400" min="5" max="120" value="30" required>
+                </div>
+                <div>
+                    <label class="block text-white font-bold mb-2">Difficulty</label>
+                    <select id="custom-difficulty" class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white">
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                        <option value="Intense">Intense</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-white font-bold mb-2">Workout Type</label>
+                <select id="custom-type" class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white">
+                    <option value="Custom Strength">Custom Strength</option>
+                    <option value="Custom Cardio">Custom Cardio</option>
+                    <option value="Custom HIIT">Custom HIIT</option>
+                    <option value="Custom Yoga">Custom Yoga</option>
+                    <option value="Custom Sports">Custom Sports</option>
+                    <option value="Custom Mixed">Custom Mixed</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-white font-bold mb-2">Exercise List (one per line)</label>
+                <textarea id="custom-exercises" class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 h-32" placeholder="Push-ups - 3 sets x 12&#10;Squats - 3 sets x 15&#10;Plank - 3 sets x 30 seconds&#10;Jumping Jacks - 2 minutes" required></textarea>
+            </div>
+            
+            <div>
+                <label class="block text-white font-bold mb-2">Description</label>
+                <textarea id="custom-description" class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 h-24" placeholder="Describe your custom workout..." required></textarea>
+            </div>
+            
+            <div class="text-center pt-4">
+                <button type="button" onclick="submitCustomWorkout()" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-4 px-8 rounded-xl text-lg">
+                    🚀 START CUSTOM WORKOUT
+                </button>
+            </div>
+        </form>
+    `;
+    
+    detailsModal.classList.add('active');
+}
+
+function submitCustomWorkout() {
+    const name = document.getElementById('custom-name').value;
+    const duration = document.getElementById('custom-duration').value;
+    const difficulty = document.getElementById('custom-difficulty').value;
+    const type = document.getElementById('custom-type').value;
+    const exercisesText = document.getElementById('custom-exercises').value;
+    const description = document.getElementById('custom-description').value;
+    
+    if (!name || !duration || !exercisesText || !description) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    const exercises = exercisesText.split('\n').filter(ex => ex.trim());
+    
+    // Create a hidden form and submit it
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ url_for("create_custom_workout") }}';
+    
+    const nameInput = document.createElement('input');
+    nameInput.type = 'hidden';
+    nameInput.name = 'name';
+    nameInput.value = name;
+    form.appendChild(nameInput);
+    
+    const durationInput = document.createElement('input');
+    durationInput.type = 'hidden';
+    durationInput.name = 'duration';
+    durationInput.value = duration;
+    form.appendChild(durationInput);
+    
+    const difficultyInput = document.createElement('input');
+    difficultyInput.type = 'hidden';
+    difficultyInput.name = 'difficulty';
+    difficultyInput.value = difficulty;
+    form.appendChild(difficultyInput);
+    
+    const typeInput = document.createElement('input');
+    typeInput.type = 'hidden';
+    typeInput.name = 'type';
+    typeInput.value = type;
+    form.appendChild(typeInput);
+    
+    const exercisesInput = document.createElement('input');
+    exercisesInput.type = 'hidden';
+    exercisesInput.name = 'exercises';
+    exercisesInput.value = JSON.stringify(exercises);
+    form.appendChild(exercisesInput);
+    
+    const descriptionInput = document.createElement('input');
+    descriptionInput.type = 'hidden';
+    descriptionInput.name = 'description';
+    descriptionInput.value = description;
+    form.appendChild(descriptionInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    const detailsModal = document.getElementById('workout-details-modal');
+    if (event.target === detailsModal) {
+        closeWorkoutDetails();
+    }
+});
+</script>
 {% endblock %}

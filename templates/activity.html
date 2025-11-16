@@ -77,22 +77,22 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div class="activity-card rounded-2xl p-4 text-center">
             <span class="text-3xl floating">🔥</span>
-            <p class="text-2xl font-black text-yellow-300 mt-2 pulsing">47</p>
+            <p class="text-2xl font-black text-yellow-300 mt-2 pulsing">{{ user_stats.total_workouts or 0 }}</p>
             <p class="text-gray-400 text-sm">Workouts</p>
         </div>
         <div class="activity-card rounded-2xl p-4 text-center">
             <span class="text-3xl floating" style="animation-delay: 0.2s;">⏱️</span>
-            <p class="text-2xl font-black text-blue-300 mt-2 pulsing" style="animation-delay: 0.2s;">32.5h</p>
+            <p class="text-2xl font-black text-blue-300 mt-2 pulsing" style="animation-delay: 0.2s;">{{ "%.1fh" | format((user_stats.total_time_minutes or 0) / 60) }}</p>
             <p class="text-gray-400 text-sm">Total Time</p>
         </div>
         <div class="activity-card rounded-2xl p-4 text-center">
             <span class="text-3xl floating" style="animation-delay: 0.4s;">🏆</span>
-            <p class="text-2xl font-black text-green-300 mt-2 pulsing" style="animation-delay: 0.4s;">2,340</p>
+            <p class="text-2xl font-black text-green-300 mt-2 pulsing" style="animation-delay: 0.4s;">{{ "{:,}".format(user_stats.total_points or 0) }}</p>
             <p class="text-gray-400 text-sm">Points</p>
         </div>
         <div class="activity-card rounded-2xl p-4 text-center">
             <span class="text-3xl floating" style="animation-delay: 0.6s;">📈</span>
-            <p class="text-2xl font-black text-purple-300 mt-2 pulsing" style="animation-delay: 0.6s;">Level 5</p>
+            <p class="text-2xl font-black text-purple-300 mt-2 pulsing" style="animation-delay: 0.6s;">Level {{ user_stats.level or 1 }}</p>
             <p class="text-gray-400 text-sm">Current Level</p>
         </div>
     </div>
@@ -197,8 +197,11 @@
 
         <!-- Load More -->
         <div class="text-center mt-6">
-            <button class="filter-btn bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-black py-2 px-6 rounded-xl">
+            <button id="load-more-btn" class="bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-black py-2 px-6 rounded-xl">
                 Load More Activities
+            </button>
+            <button id="hide-btn" class="bg-gradient-to-r from-gray-400 to-gray-600 hover:from-gray-500 hover:to-gray-700 text-white font-black py-2 px-6 rounded-xl" style="display: none;">
+                Hide Activities
             </button>
         </div>
     </div>
@@ -222,4 +225,156 @@
         </div>
     </div>
 </div>
+
+<script>
+// Activity filtering functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const activityItems = document.querySelectorAll('.activity-item');
+    const loadMoreButton = document.getElementById('load-more-btn');
+    const hideButton = document.getElementById('hide-btn');
+    
+    // Initially show only first 5 activities
+    let showingAll = false;
+    showActivities(5);
+    
+    function showActivities(count) {
+        activityItems.forEach((item, index) => {
+            if (count === 'all' || index < count) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        // Show/hide buttons based on state
+        if (count === 'all' || count >= activityItems.length) {
+            if (loadMoreButton) loadMoreButton.style.display = 'none';
+            if (hideButton) hideButton.style.display = 'block';
+        } else {
+            if (loadMoreButton) loadMoreButton.style.display = 'block';
+            if (hideButton) hideButton.style.display = 'none';
+        }
+    }
+    
+    // Load more functionality - show all activities at once
+    if (loadMoreButton) {
+        loadMoreButton.addEventListener('click', function() {
+            showingAll = true;
+            showActivities('all');
+        });
+    }
+    
+    // Hide functionality - show only first 5 activities
+    if (hideButton) {
+        hideButton.addEventListener('click', function() {
+            showingAll = false;
+            showActivities(5);
+        });
+    }
+    
+    // Add click event listeners to filter buttons
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => {
+                btn.classList.remove('active', 'text-white', 'bg-gradient-to-r', 'from-purple-400', 'to-pink-500');
+                btn.classList.add('text-gray-300');
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active', 'text-white', 'bg-gradient-to-r', 'from-purple-400', 'to-pink-500');
+            this.classList.remove('text-gray-300');
+            
+            // Get filter type
+            const filterType = this.textContent.trim().toLowerCase();
+            
+            // Filter activities
+            filterActivities(filterType);
+        });
+    });
+    
+    function filterActivities(filterType) {
+        const filteredItems = [];
+        
+        activityItems.forEach(item => {
+            const shouldShow = shouldShowActivity(item, filterType);
+            if (shouldShow) {
+                filteredItems.push(item);
+            }
+            item.style.display = 'none';
+        });
+        
+        // Show only first 5 filtered items initially
+        let showingCount = 5;
+        filteredItems.forEach((item, index) => {
+            if (index < showingCount) {
+                item.style.display = 'flex';
+            }
+        });
+        
+        // Show/hide buttons based on filtered results
+        if (loadMoreButton && hideButton) {
+            if (filteredItems.length <= 5) {
+                loadMoreButton.style.display = 'none';
+                hideButton.style.display = 'none';
+            } else {
+                loadMoreButton.style.display = 'block';
+                hideButton.style.display = 'none';
+                loadMoreButton.textContent = `Load More Activities (${filteredItems.length - 5} remaining)`;
+            }
+            
+            // Add load more functionality for filtered results - show all at once
+            loadMoreButton.onclick = function() {
+                filteredItems.forEach(item => {
+                    item.style.display = 'flex';
+                });
+                loadMoreButton.style.display = 'none';
+                hideButton.style.display = 'block';
+            };
+            
+            // Add hide functionality for filtered results - show only first 5
+            hideButton.onclick = function() {
+                filteredItems.forEach((item, index) => {
+                    if (index < 5) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                loadMoreButton.style.display = 'block';
+                hideButton.style.display = 'none';
+                loadMoreButton.textContent = `Load More Activities (${filteredItems.length - 5} remaining)`;
+            };
+        }
+    }
+    
+    function shouldShowActivity(item, filterType) {
+        if (filterType === 'all activities') {
+            return true;
+        }
+        
+        // Check activity type based on content and styling
+        if (filterType === 'workouts') {
+            return item.innerHTML.includes('✅') || item.innerHTML.includes('workout');
+        } else if (filterType === 'achievements') {
+            return item.innerHTML.includes('🏆') || item.innerHTML.includes('achievement');
+        } else if (filterType === 'personal records') {
+            return item.innerHTML.includes('🔥') || item.innerHTML.includes('milestone');
+        } else if (filterType === 'challenges') {
+            return item.innerHTML.includes('🎯') || item.innerHTML.includes('challenge');
+        }
+        
+        return false;
+    }
+    
+    // Initialize with "All Activities" filter
+    const allActivitiesButton = document.querySelector('.filter-btn.active');
+    if (allActivitiesButton) {
+        allActivitiesButton.classList.add('bg-gradient-to-r', 'from-purple-400', 'to-pink-500');
+        allActivitiesButton.classList.remove('text-gray-300');
+    }
+});
+</script>
+
 {% endblock %}

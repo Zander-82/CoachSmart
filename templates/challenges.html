@@ -87,6 +87,20 @@
 
 .tab-btn:hover {
     transform: translateY(-2px);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+}
+
+.filter-btn {
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
 }
 
 .tab-btn.active {
@@ -106,39 +120,82 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div class="challenge-card rounded-2xl p-4 text-center">
             <span class="text-3xl floating">🔥</span>
-            <p class="text-2xl font-black text-orange-300 mt-2 pulsing">2</p>
+            <p class="text-2xl font-black text-orange-300 mt-2 pulsing">{{ active_challenges|length }}</p>
             <p class="text-gray-400 text-sm">Active</p>
         </div>
         <div class="challenge-card rounded-2xl p-4 text-center">
             <span class="text-3xl floating" style="animation-delay: 0.2s;">✅</span>
-            <p class="text-2xl font-black text-green-300 mt-2 pulsing" style="animation-delay: 0.2s;">8</p>
+            <p class="text-2xl font-black text-green-300 mt-2 pulsing" style="animation-delay: 0.2s;">{{ completed_challenges|length }}</p>
             <p class="text-gray-400 text-sm">Completed</p>
         </div>
         <div class="challenge-card rounded-2xl p-4 text-center">
             <span class="text-3xl floating" style="animation-delay: 0.4s;">🏅</span>
-            <p class="text-2xl font-black text-yellow-300 mt-2 pulsing" style="animation-delay: 0.4s;">3</p>
+            <p class="text-2xl font-black text-yellow-300 mt-2 pulsing" style="animation-delay: 0.4s;">{{ gold_medals }}</p>
             <p class="text-gray-400 text-sm">Gold Medals</p>
         </div>
         <div class="challenge-card rounded-2xl p-4 text-center">
             <span class="text-3xl floating" style="animation-delay: 0.6s;">💎</span>
-            <p class="text-2xl font-black text-purple-300 mt-2 pulsing" style="animation-delay: 0.6s;">1,250</p>
+            <p class="text-2xl font-black text-purple-300 mt-2 pulsing" style="animation-delay: 0.6s;">{{ user_stats.total_points if user_stats else 0 }}</p>
             <p class="text-gray-400 text-sm">Total Points</p>
         </div>
     </div>
 
     <!-- Tabs -->
     <div class="flex flex-wrap gap-3 mb-6">
-        <button class="tab-btn active px-4 py-2 rounded-xl border border-purple-500/30 text-white font-black">
+        <button class="tab-btn active px-4 py-2 rounded-xl border border-purple-500/30 text-white font-black" data-tab="active">
             🔥 Active
         </button>
-        <button class="tab-btn px-4 py-2 rounded-xl border border-purple-500/30 text-gray-300 font-black hover:text-white">
+        <button class="tab-btn px-4 py-2 rounded-xl border border-purple-500/30 text-gray-300 font-black hover:text-white" data-tab="available">
             📋 Available
         </button>
-        <button class="tab-btn px-4 py-2 rounded-xl border border-purple-500/30 text-gray-300 font-black hover:text-white">
+        <button class="tab-btn px-4 py-2 rounded-xl border border-purple-500/30 text-gray-300 font-black hover:text-white" data-tab="completed">
             ✅ Completed
         </button>
-        <button class="tab-btn px-4 py-2 rounded-xl border border-purple-500/30 text-gray-300 font-black hover:text-white">
+        <button class="tab-btn px-4 py-2 rounded-xl border border-purple-500/30 text-gray-300 font-black hover:text-white" data-tab="leaderboard">
             🏆 Leaderboard
+        </button>
+    </div>
+
+    <!-- Challenge Type Filters (for Available Challenges) -->
+    <div id="challenge-filters" class="flex flex-wrap gap-2 mb-6" style="display: none;">
+        <button class="filter-btn active px-3 py-1 rounded-lg border border-purple-500/30 text-white text-sm font-black" data-type="all">
+            All Types
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="streak">
+            🔥 Streaks
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="workout_count">
+            💪 Workouts
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="distance">
+            🏃 Distance
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="time">
+            ⏱️ Time
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="calories">
+            🔥 Calories
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="points">
+            💎 Points
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="challenge_count">
+            🎯 Challenges
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="variety">
+            🌟 Variety
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="ultimate">
+            👑 Ultimate
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="personal_record">
+            ⚡ Records
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-gray-300 text-sm font-black hover:text-white" data-type="weekly_goal">
+            📅 Weekly
+        </button>
+        <button class="filter-btn px-3 py-1 rounded-lg border border-purple-500/30 text-yellow-300 text-sm font-black hover:text-white" data-type="gold">
+            🏆 Gold Only
         </button>
     </div>
 
@@ -148,9 +205,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {% for user_challenge, challenge in active_challenges %}
                 {% set progress_percent = (user_challenge.current_progress / challenge.target_value * 100) if challenge.target_value > 0 else 0 %}
-                <div class="challenge-card rounded-2xl p-6">
+                <div class="challenge-card rounded-2xl p-6 {% if challenge.badge_name == 'gold' %}gold{% endif %}">
                     <div class="flex justify-between items-center mb-4">
                         <div>
+                            {% if challenge.badge_name == 'gold' %}
+                                <span class="inline-block bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-black px-2 py-1 rounded-full mb-1">🏆 GOLD</span>
+                            {% endif %}
                             <h3 class="text-lg font-black text-orange-300 mb-1">🔥 {{ challenge.name }}</h3>
                             <p class="text-gray-300 text-sm">{{ challenge.description }}</p>
                         </div>
@@ -163,7 +223,17 @@
                     <div class="mb-4">
                         <div class="flex justify-between text-sm text-gray-400 mb-1">
                             <span>Progress</span>
-                            <span>{{ user_challenge.current_progress }}/{{ challenge.target_value }} {% if challenge.challenge_type == 'streak' %}days{% elif challenge.challenge_type == 'workout_count' %}workouts{% else %}goals{% endif %}</span>
+                            <span>{{ user_challenge.current_progress }}/{{ challenge.target_value }} 
+                            {% if challenge.challenge_type == 'streak' %}days
+                            {% elif challenge.challenge_type == 'workout_count' %}workouts
+                            {% elif challenge.challenge_type == 'distance' %}km
+                            {% elif challenge.challenge_type == 'time' %}minutes
+                            {% elif challenge.challenge_type == 'calories' %}calories
+                            {% elif challenge.challenge_type == 'points' %}points
+                            {% elif challenge.challenge_type == 'challenge_count' %}challenges
+                            {% elif challenge.challenge_type == 'variety' %}workouts
+                            {% elif challenge.challenge_type == 'ultimate' %}complete
+                            {% else %}goals{% endif %}</span>
                         </div>
                         <div class="w-full bg-gray-700 rounded-full h-3">
                             <div class="bg-gradient-to-r from-orange-400 to-red-500 h-3 rounded-full transition-all duration-500" style="--progress-width: {{ progress_percent }}%; width: var(--progress-width)"></div>
@@ -196,13 +266,23 @@
     {% if available_challenges %}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {% for challenge in available_challenges %}
-                <div class="challenge-card rounded-2xl p-6">
+                <div class="challenge-card rounded-2xl p-6 {% if challenge.badge_name == 'gold' %}gold{% endif %}" 
+                     data-challenge-type="{{ challenge.challenge_type }}"
+                     data-is-gold="{{ 'true' if challenge.badge_name == 'gold' else 'false' }}">
                     <div class="text-center mb-4">
                         <span class="text-4xl floating">
-                            {% if challenge.challenge_type == 'streak' %}🔥
+                            {% if challenge.badge_name == 'gold' %}🏆
+                            {% elif challenge.challenge_type == 'streak' %}🔥
                             {% elif challenge.challenge_type == 'workout_count' %}💪
                             {% elif challenge.challenge_type == 'distance' %}🏃
                             {% elif challenge.challenge_type == 'time' %}⏱️
+                            {% elif challenge.challenge_type == 'calories' %}🔥
+                            {% elif challenge.challenge_type == 'points' %}💎
+                            {% elif challenge.challenge_type == 'challenge_count' %}🎯
+                            {% elif challenge.challenge_type == 'variety' %}🌟
+                            {% elif challenge.challenge_type == 'ultimate' %}👑
+                            {% elif challenge.challenge_type == 'personal_record' %}⚡
+                            {% elif challenge.challenge_type == 'weekly_goal' %}📅
                             {% else %}🎯{% endif %}
                         </span>
                         <h3 class="text-lg font-black text-green-300 mt-3">{{ challenge.name }}</h3>
@@ -210,6 +290,9 @@
                     </div>
 
                     <div class="text-center mb-4">
+                        {% if challenge.badge_name == 'gold' %}
+                            <span class="inline-block bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-black px-2 py-1 rounded-full mb-2">🏆 GOLD</span>
+                        {% endif %}
                         <span class="text-yellow-300">🏆 {{ challenge.points_reward }} pts</span>
                     </div>
 
@@ -258,4 +341,73 @@
         </div>
     {% endif %}
 </div>
+
+<script>
+// Tab switching functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const challengeFilters = document.getElementById('challenge-filters');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    // Tab switching
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all tabs
+            tabButtons.forEach(tab => {
+                tab.classList.remove('active', 'text-white');
+                tab.classList.add('text-gray-300');
+            });
+            
+            // Add active class to clicked tab
+            this.classList.add('active', 'text-white');
+            this.classList.remove('text-gray-300');
+            
+            // Show/hide filters based on active tab
+            const tabType = this.getAttribute('data-tab');
+            if (tabType === 'available') {
+                challengeFilters.style.display = 'flex';
+            } else {
+                challengeFilters.style.display = 'none';
+            }
+            
+            // Here you could add logic to show/hide different content sections
+            // For now, we'll just handle the filter visibility
+        });
+    });
+    
+    // Filter functionality for available challenges
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all filter buttons
+            filterButtons.forEach(filter => {
+                filter.classList.remove('active', 'text-white');
+                filter.classList.add('text-gray-300');
+            });
+            
+            // Add active class to clicked filter
+            this.classList.add('active', 'text-white');
+            this.classList.remove('text-gray-300');
+            
+            // Filter challenges
+            const filterType = this.getAttribute('data-type');
+            const challengeCards = document.querySelectorAll('.challenge-card[data-challenge-type]');
+            
+            challengeCards.forEach(card => {
+                const challengeType = card.getAttribute('data-challenge-type');
+                const isGold = card.getAttribute('data-is-gold') === 'true';
+                
+                // Show/hide based on filter
+                if (filterType === 'all') {
+                    card.style.display = 'block';
+                } else if (filterType === 'gold') {
+                    card.style.display = isGold ? 'block' : 'none';
+                } else {
+                    card.style.display = challengeType === filterType ? 'block' : 'none';
+                }
+            });
+        });
+    });
+});
+</script>
+
 {% endblock %}
