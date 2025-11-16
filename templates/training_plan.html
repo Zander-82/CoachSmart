@@ -263,5 +263,222 @@
             </div>
         </div>
     </div>
+
+    <!-- Goals Section -->
+    <div class="plan-card rounded-2xl p-6 mb-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black text-white">🎯 YOUR GOALS</h2>
+            <button onclick="showGoalModal()" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-2 px-4 rounded-lg">
+                ➕ Add Goal
+            </button>
+        </div>
+
+        <!-- Active Goals -->
+        {% if active_goals %}
+            <div class="space-y-4 mb-6">
+                {% for goal in active_goals %}
+                    <div class="bg-gradient-to-r from-blue-500/20 to-purple-500/20 p-4 rounded-xl border border-blue-500/30">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-black text-white text-lg">{{ goal.title }}</h3>
+                                {% if goal.description %}
+                                    <p class="text-gray-300 text-sm">{{ goal.description }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                {% if goal.target_date %}
+                                    <span class="text-xs text-gray-400">Due: {{ goal.target_date.strftime('%b %d') }}</span>
+                                {% endif %}
+                                <button onclick="deleteGoal('{{ goal.id }}')" class="text-red-400 hover:text-red-300">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-2">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-300">Progress</span>
+                                <span class="text-yellow-300 font-black">{{ "%.1f" | format(goal.current_value) }} / {{ goal.target_value }} {{ goal.unit }}</span>
+                            </div>
+                            {% set goal_progress = (goal.current_value / goal.target_value * 100) %}
+                            <div class="w-full bg-gray-700 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-500 goal-progress" data-progress="{{ goal_progress }}"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Update Progress -->
+                        <div class="flex items-center space-x-2 mt-3">
+                            <input type="number" 
+                                   id="goal-progress-{{ goal.id }}" 
+                                   value="{{ goal.current_value }}" 
+                                   step="0.1" 
+                                   min="0"
+                                   class="bg-gray-700 text-white px-3 py-1 rounded-lg flex-1"
+                                   placeholder="Current value">
+                            <button onclick="updateGoalProgress('{{ goal.id }}')" 
+                                    class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-1 px-3 rounded-lg text-sm">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-8 mb-6">
+                <span class="text-6xl mb-4 floating">🎯</span>
+                <p class="text-gray-300 text-lg mb-2">No active goals yet!</p>
+                <p class="text-gray-400">Set your first goal to start tracking your progress 🚀</p>
+            </div>
+        {% endif %}
+
+        <!-- Completed Goals -->
+        {% if completed_goals %}
+            <div class="border-t border-gray-600 pt-4">
+                <h3 class="text-lg font-black text-white mb-3">✅ Completed Goals</h3>
+                <div class="space-y-2">
+                    {% for goal in completed_goals[:3] %}  <!-- Show last 3 completed goals -->
+                        <div class="flex justify-between items-center p-3 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-lg">
+                            <span class="text-green-300 font-black">{{ goal.title }}</span>
+                            <span class="text-gray-400 text-sm">{{ goal.completed_at.strftime('%b %d') }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
 </div>
+
+<!-- Goal Modal -->
+<div id="goalModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
+        <h3 class="text-2xl font-black text-white mb-4">🎯 Create New Goal</h3>
+        <form id="goalForm" action="{{ url_for('add_goal') }}" method="POST">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-300 text-sm font-black mb-2">Goal Title</label>
+                    <input type="text" name="title" required class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg" placeholder="e.g., Lose 5kg">
+                </div>
+                
+                <div>
+                    <label class="block text-gray-300 text-sm font-black mb-2">Description (Optional)</label>
+                    <textarea name="description" rows="3" class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg" placeholder="Describe your goal..."></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-300 text-sm font-black mb-2">Goal Type</label>
+                    <select name="goal_type" required class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg">
+                        <option value="">Select type...</option>
+                        <option value="weight_loss">🏃 Weight Loss</option>
+                        <option value="muscle_gain">💪 Muscle Gain</option>
+                        <option value="endurance">⚡ Endurance</option>
+                        <option value="strength">🎯 Strength</option>
+                        <option value="custom">⭐ Custom</option>
+                    </select>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-black mb-2">Target Value</label>
+                        <input type="number" name="target_value" required step="0.1" min="0" class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg" placeholder="5">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-300 text-sm font-black mb-2">Unit</label>
+                        <select name="unit" required class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg">
+                            <option value="">Unit...</option>
+                            <option value="kg">kg</option>
+                            <option value="lbs">lbs</option>
+                            <option value="minutes">minutes</option>
+                            <option value="workouts">workouts</option>
+                            <option value="km">km</option>
+                            <option value="miles">miles</option>
+                            <option value="times">times</option>
+                            <option value="hours">hours</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-300 text-sm font-black mb-2">Target Date (Optional)</label>
+                    <input type="date" name="target_date" class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg">
+                </div>
+            </div>
+            
+            <div class="flex space-x-3 mt-6">
+                <button type="submit" class="flex-1 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black py-2 px-4 rounded-lg">
+                    Create Goal
+                </button>
+                <button type="button" onclick="hideGoalModal()" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-black py-2 px-4 rounded-lg">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Set progress bar widths from data attributes
+document.addEventListener('DOMContentLoaded', function() {
+    const progressBars = document.querySelectorAll('.goal-progress');
+    progressBars.forEach(bar => {
+        const progress = bar.getAttribute('data-progress');
+        bar.style.width = progress + '%';
+    });
+});
+
+function showGoalModal() {
+    document.getElementById('goalModal').classList.remove('hidden');
+}
+
+function hideGoalModal() {
+    document.getElementById('goalModal').classList.add('hidden');
+}
+
+function updateGoalProgress(goalId) {
+    const input = document.getElementById(`goal-progress-${goalId}`);
+    const newValue = parseFloat(input.value);
+    
+    if (isNaN(newValue) || newValue < 0) {
+        alert('Please enter a valid positive number');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('current_value', newValue);
+    
+    fetch(`/update-goal/${parseInt(goalId)}`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.is_completed) {
+                // Reload page to show completion message
+                window.location.reload();
+            } else {
+                // Update progress bar
+                location.reload();
+            }
+        } else {
+            alert('Error updating goal: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating goal');
+    });
+}
+
+function deleteGoal(goalId) {
+    if (confirm('Are you sure you want to delete this goal?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/delete-goal/${parseInt(goalId)}`;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
 {% endblock %}

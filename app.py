@@ -34,6 +34,26 @@ class UserStats(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
 
+# Goal Model
+class Goal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    goal_type = db.Column(db.String(50), nullable=False)  # 'weight_loss', 'muscle_gain', 'endurance', 'strength', 'custom'
+    target_value = db.Column(db.Float, nullable=False)
+    current_value = db.Column(db.Float, default=0.0)
+    unit = db.Column(db.String(20), nullable=False)  # 'kg', 'lbs', 'minutes', 'workouts', 'km', etc.
+    target_date = db.Column(db.Date)
+    is_completed = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+    completed_at = db.Column(db.DateTime)
+    
+    # Relationship to user
+    user = db.relationship('User', backref='goals')
+
 # Workout Model
 class Workout(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -43,6 +63,18 @@ class Workout(db.Model):
     difficulty = db.Column(db.String(20), nullable=False)  # Easy, Medium, Hard, Intense
     points_earned = db.Column(db.Integer, default=0)
     completed_at = db.Column(db.DateTime, server_default=db.func.now())
+
+# Custom Workout Model
+class CustomWorkout(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    duration_minutes = db.Column(db.Integer, nullable=False)
+    difficulty = db.Column(db.String(20), nullable=False)
+    workout_type = db.Column(db.String(50), nullable=False)
+    exercises = db.Column(db.Text, nullable=False)  # JSON string of exercises
+    description = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
 
 # Activity Model
 class Activity(db.Model):
@@ -91,6 +123,7 @@ def init_db_command():
     # Create default challenges if they don't exist
     if Challenge.query.count() == 0:
         default_challenges = [
+            # Regular Challenges (50-99 points)
             Challenge(name='30-Day Streak', description='Keep the fire burning! Work out every day for 30 days.', 
                      target_value=30, points_reward=500, badge_name='Fire Badge', challenge_type='streak'),
             Challenge(name='Strength Builder', description='Complete 20 strength workouts to build muscle power.', 
@@ -107,6 +140,44 @@ def init_db_command():
                      target_value=10, points_reward=200, badge_name='Early Bird Badge', challenge_type='workout_count'),
             Challenge(name='Perfect Week', description='7 workouts in one week', 
                      target_value=7, points_reward=300, badge_name='Perfect Week Badge', challenge_type='weekly_goal'),
+            
+            # New Regular Challenges
+            Challenge(name='Cardio King', description='Complete 30 cardio workouts', 
+                     target_value=30, points_reward=350, badge_name='Cardio Badge', challenge_type='workout_count'),
+            Challenge(name='Weekend Warrior', description='15 weekend workouts', 
+                     target_value=15, points_reward=280, badge_name='Weekend Badge', challenge_type='workout_count'),
+            Challenge(name='Mind & Body', description='20 yoga or meditation sessions', 
+                     target_value=20, points_reward=320, badge_name='Mindfulness Badge', challenge_type='workout_count'),
+            Challenge(name='Quick Fire', description='25 quick workouts (under 20 minutes)', 
+                     target_value=25, points_reward=300, badge_name='Quick Badge', challenge_type='workout_count'),
+            Challenge(name='Marathon Ready', description='Run 50km total distance', 
+                     target_value=50, points_reward=400, badge_name='Distance Badge', challenge_type='distance'),
+            Challenge(name='Calorie Crusher', description='Burn 10,000 calories', 
+                     target_value=10000, points_reward=380, badge_name='Burn Badge', challenge_type='calories'),
+            Challenge(name='Consistency Champion', description='Work out 3x per week for 8 weeks', 
+                     target_value=24, points_reward=450, badge_name='Consistency Badge', challenge_type='workout_count'),
+            
+            # Gold Medal Challenges (100+ points or gold badge)
+            Challenge(name='100 Day Warrior', description='Work out every day for 100 days straight!', 
+                     target_value=100, points_reward=1500, badge_name='gold', challenge_type='streak'),
+            Challenge(name='Elite Athlete', description='Complete 100 total workouts', 
+                     target_value=100, points_reward=1200, badge_name='gold', challenge_type='workout_count'),
+            Challenge(name='Century Club', description='Accumulate 10,000 workout minutes', 
+                     target_value=10000, points_reward=1000, badge_name='gold', challenge_type='time'),
+            Challenge(name='Master of All', description='Complete 20 workouts of each type (5 types)', 
+                     target_value=100, points_reward=1100, badge_name='gold', challenge_type='variety'),
+            Challenge(name='Legendary Streak', description='Maintain a 50-day workout streak', 
+                     target_value=50, points_reward=800, badge_name='gold', challenge_type='streak'),
+            Challenge(name='Point Master', description='Earn 5,000 total points', 
+                     target_value=5000, points_reward=900, badge_name='gold', challenge_type='points'),
+            Challenge(name='Challenge Conqueror', description='Complete 50 different challenges', 
+                     target_value=50, points_reward=1300, badge_name='gold', challenge_type='challenge_count'),
+            Challenge(name='Fitness Guru', description='Work out 500 times total', 
+                     target_value=500, points_reward=2000, badge_name='gold', challenge_type='workout_count'),
+            Challenge(name='Time Titan', description='Spend 200 hours working out', 
+                     target_value=12000, points_reward=1500, badge_name='gold', challenge_type='time'),
+            Challenge(name='Ultimate Champion', description='Complete all challenge types and maintain 30-day streak', 
+                     target_value=1, points_reward=2500, badge_name='gold', challenge_type='ultimate'),
         ]
         
         for challenge in default_challenges:
@@ -115,6 +186,8 @@ def init_db_command():
         db.session.commit()
         print('Default challenges created.')
     
+    # Create default goal templates if they don't exist
+    # Note: These are templates, users will create their own instances
     print('Database initialized.')
 
 @app.route('/')
@@ -176,12 +249,6 @@ def signup():
             # Initialize user stats
             user_stats = UserStats(user_id=new_user.id)
             db.session.add(user_stats)
-            
-            # Add initial challenges for new user
-            default_challenges = Challenge.query.all()
-            for challenge in default_challenges:
-                user_challenge = UserChallenge(user_id=new_user.id, challenge_id=challenge.id)
-                db.session.add(user_challenge)
             
             db.session.commit()
             
@@ -265,13 +332,52 @@ def start_workout():
         return redirect(url_for('get_started'))
     
     user_id = session['user_id']
-    
+
     # Get user stats for display
     user_stats = UserStats.query.filter_by(user_id=user_id).first()
     
-    return render_template('workout.html', 
+    # Get recent workouts for recommendations
+    recent_workouts = Workout.query.filter_by(user_id=user_id).order_by(Workout.completed_at.desc()).limit(10).all()
+    
+    # Get custom workouts for this user
+    custom_workouts_db = CustomWorkout.query.filter_by(user_id=user_id).order_by(CustomWorkout.created_at.desc()).all()
+    custom_workouts = []
+    for workout in custom_workouts_db:
+        custom_workouts.append({
+            'id': workout.id,
+            'name': workout.name,
+            'duration_minutes': workout.duration_minutes,
+            'difficulty': workout.difficulty,
+            'workout_type': workout.workout_type,
+            'exercises': workout.exercises,
+            'description': workout.description,
+            'created_at': workout.created_at.isoformat() if workout.created_at else None
+        })
+    
+    # Determine user preferences based on past activities
+    workout_preferences = {}
+    if recent_workouts:
+        workout_types = [w.workout_type for w in recent_workouts]
+        difficulties = [w.difficulty for w in recent_workouts]
+        
+        # Count frequency of workout types
+        from collections import Counter
+        type_counts = Counter(workout_types)
+        difficulty_counts = Counter(difficulties)
+        
+        workout_preferences['favorite_type'] = type_counts.most_common(1)[0][0] if type_counts else 'Cardio'
+        workout_preferences['preferred_difficulty'] = difficulty_counts.most_common(1)[0][0] if difficulty_counts else 'Medium'
+        workout_preferences['workout_count'] = len(recent_workouts)
+    else:
+        workout_preferences['favorite_type'] = 'Cardio'
+        workout_preferences['preferred_difficulty'] = 'Medium'
+        workout_preferences['workout_count'] = 0
+
+    return render_template('workout.html',
                          username=session.get('username'),
-                         user_stats=user_stats)
+                         user_stats=user_stats,
+                         workout_preferences=workout_preferences,
+                         custom_workouts=custom_workouts)
 
 @app.route('/training-plan')
 def training_plan():
@@ -336,18 +442,146 @@ def training_plan():
     muscle_gain_percent = ((user_stats.level or 1) / 10 * 100)
     stamina_percent = (min((user_stats.total_time_minutes or 0) / 60, 25) / 25 * 100)
     
+    # Get user goals
+    active_goals = Goal.query.filter_by(user_id=user_id, is_active=True, is_completed=False).all()
+    completed_goals = Goal.query.filter_by(user_id=user_id, is_completed=True).all()
+    
     return render_template('training_plan.html',
                          username=session.get('username'),
                          user_stats=user_stats,
                          user_workouts=user_workouts,
                          weekly_workouts=weekly_workouts,
                          todays_workout=todays_workout,
+                         active_goals=active_goals,
+                         completed_goals=completed_goals,
                          weekly_percent=weekly_percent,
                          level_percent=level_percent,
                          endurance_percent=endurance_percent,
                          weight_loss_percent=weight_loss_percent,
                          muscle_gain_percent=muscle_gain_percent,
                          stamina_percent=stamina_percent)
+
+# Goal Management Routes
+@app.route('/goals')
+def goals():
+    if 'user_id' not in session:
+        flash('Please sign in to view your goals.', 'error')
+        return redirect(url_for('get_started'))
+    
+    # Redirect to training plan since goals are now integrated there
+    return redirect(url_for('training_plan'))
+
+@app.route('/add-goal', methods=['GET', 'POST'])
+def add_goal():
+    if 'user_id' not in session:
+        flash('Please sign in to create goals.', 'error')
+        return redirect(url_for('get_started'))
+    
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        goal_type = request.form.get('goal_type')
+        target_value = float(request.form.get('target_value'))
+        unit = request.form.get('unit')
+        target_date_str = request.form.get('target_date')
+        
+        # Parse target date
+        target_date = None
+        if target_date_str:
+            target_date = datetime.strptime(target_date_str, '%Y-%m-%d').date()
+        
+        # Create new goal
+        new_goal = Goal(
+            user_id=session['user_id'],
+            title=title,
+            description=description,
+            goal_type=goal_type,
+            target_value=target_value,
+            current_value=0.0,
+            unit=unit,
+            target_date=target_date
+        )
+        
+        db.session.add(new_goal)
+        db.session.commit()
+        
+        # Create activity log
+        activity = Activity(
+            user_id=session['user_id'],
+            activity_type='goal_created',
+            title=f'Goal Created: {title}',
+            description=f'Created new goal: {title}',
+            points_earned=0
+        )
+        db.session.add(activity)
+        db.session.commit()
+        
+        flash('Goal created successfully!', 'success')
+        return redirect(url_for('training_plan'))
+    
+    return redirect(url_for('training_plan'))
+
+@app.route('/update-goal/<int:goal_id>', methods=['POST'])
+def update_goal(goal_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    goal = Goal.query.filter_by(id=goal_id, user_id=session['user_id']).first()
+    if not goal:
+        return jsonify({'error': 'Goal not found'}), 404
+    
+    try:
+        new_value = float(request.form.get('current_value'))
+        goal.current_value = new_value
+        
+        # Check if goal is completed
+        if new_value >= goal.target_value:
+            goal.is_completed = True
+            goal.completed_at = datetime.now()
+            
+            # Award points for completing goal
+            points_awarded = int(goal.target_value * 10)  # 10 points per target unit
+            
+            # Update user stats
+            user_stats = UserStats.query.filter_by(user_id=session['user_id']).first()
+            if user_stats:
+                user_stats.total_points += points_awarded
+            
+            # Create activity log
+            activity = Activity(
+                user_id=session['user_id'],
+                activity_type='goal_completed',
+                title=f'Goal Completed: {goal.title}',
+                description=f'Completed goal: {goal.title}',
+                points_earned=points_awarded
+            )
+            db.session.add(activity)
+            
+            flash(f'Congratulations! Goal completed and earned {points_awarded} points! 🎉', 'success')
+        
+        db.session.commit()
+        return jsonify({'success': True, 'is_completed': goal.is_completed})
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/delete-goal/<int:goal_id>', methods=['POST'])
+def delete_goal(goal_id):
+    if 'user_id' not in session:
+        flash('Please sign in to manage goals.', 'error')
+        return redirect(url_for('get_started'))
+    
+    goal = Goal.query.filter_by(id=goal_id, user_id=session['user_id']).first()
+    if not goal:
+        flash('Goal not found.', 'error')
+        return redirect(url_for('training_plan'))
+    
+    db.session.delete(goal)
+    db.session.commit()
+    
+    flash('Goal deleted successfully.', 'success')
+    return redirect(url_for('training_plan'))
 
 @app.route('/activity')
 def activity():
@@ -374,10 +608,10 @@ def activity():
         'points_earned': sum(w.points_earned for w in monthly_workouts)
     }
     
-    return render_template('activity.html', 
+    return render_template('activity.html',
                          username=session.get('username'),
                          user_stats=user_stats,
-                         user_activities=user_activities,
+                         activities=user_activities,
                          monthly_stats=monthly_stats)
 
 @app.route('/challenges')
@@ -407,12 +641,19 @@ def challenges():
         UserChallenge.is_completed == True
     ).order_by(UserChallenge.completed_at.desc()).limit(10).all()
     
+    # Calculate gold medals (completed challenges with gold badge or high points)
+    gold_medals = 0
+    for user_challenge, challenge in completed_challenges:
+        if challenge.badge_name == 'gold' or challenge.points_reward >= 100:
+            gold_medals += 1
+    
     return render_template('challenges.html', 
                          username=session.get('username'),
                          user_stats=user_stats,
                          active_challenges=active_challenges,
                          available_challenges=available_challenges,
-                         completed_challenges=completed_challenges)
+                         completed_challenges=completed_challenges,
+                         gold_medals=gold_medals)
 
 # Action Routes
 @app.route('/complete-workout', methods=['POST'])
@@ -524,6 +765,89 @@ def complete_workout():
         flash('An error occurred. Please try again.', 'error')
     
     return redirect(url_for('dashboard'))
+
+@app.route('/delete-custom-workout/<int:workout_id>', methods=['POST'])
+def delete_custom_workout(workout_id):
+    if 'user_id' not in session:
+        flash('Please sign in to delete workouts.', 'error')
+        return redirect(url_for('get_started'))
+    
+    user_id = session['user_id']
+    
+    # Get the custom workout to delete
+    workout = CustomWorkout.query.filter_by(id=workout_id, user_id=user_id).first()
+    
+    if workout:
+        db.session.delete(workout)
+        db.session.commit()
+        flash('🗑️ Workout deleted successfully!', 'success')
+    else:
+        flash('Workout not found.', 'error')
+    
+    return redirect(url_for('my_custom_workouts'))
+
+@app.route('/my-custom-workouts')
+def my_custom_workouts():
+    if 'user_id' not in session:
+        flash('Please sign in to view your custom workouts.', 'error')
+        return redirect(url_for('get_started'))
+    
+    user_id = session['user_id']
+    
+    # Get all custom workouts for this user
+    custom_workouts_db = CustomWorkout.query.filter_by(user_id=user_id).order_by(CustomWorkout.created_at.desc()).all()
+    custom_workouts = []
+    for workout in custom_workouts_db:
+        custom_workouts.append({
+            'id': workout.id,
+            'name': workout.name,
+            'duration_minutes': workout.duration_minutes,
+            'difficulty': workout.difficulty,
+            'workout_type': workout.workout_type,
+            'exercises': workout.exercises,
+            'description': workout.description,
+            'created_at': workout.created_at
+        })
+    
+    return render_template('my_custom_workouts.html',
+                         username=session.get('username'),
+                         custom_workouts=custom_workouts)
+
+@app.route('/create-custom-workout', methods=['POST'])
+def create_custom_workout():
+    if 'user_id' not in session:
+        flash('Please sign in to create a custom workout.', 'error')
+        return redirect(url_for('get_started'))
+    
+    user_id = session['user_id']
+    name = request.form.get('name')
+    duration = int(request.form.get('duration', 30))
+    difficulty = request.form.get('difficulty')
+    workout_type = request.form.get('type')
+    exercises = request.form.get('exercises')
+    description = request.form.get('description')
+    
+    try:
+        # Create custom workout record
+        custom_workout = CustomWorkout(
+            user_id=user_id,
+            name=name,
+            duration_minutes=duration,
+            difficulty=difficulty,
+            workout_type=workout_type,
+            exercises=exercises,
+            description=description
+        )
+        db.session.add(custom_workout)
+        db.session.commit()
+        
+        flash(f'🎨 Custom workout "{name}" created successfully!', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while creating your custom workout. Please try again.', 'error')
+    
+    return redirect(url_for('start_workout'))
 
 @app.route('/join-challenge/<int:challenge_id>', methods=['POST'])
 def join_challenge(challenge_id):
