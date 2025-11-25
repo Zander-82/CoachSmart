@@ -57,118 +57,151 @@
     transform: translateX(10px);
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
 }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 2.5rem !important;
+    }
+    
+    h2 {
+        font-size: 2rem !important;
+    }
+    
+    .team-card {
+        padding: 1.5rem;
+    }
+    
+    .feature-item {
+        padding: 1rem !important;
+    }
+}
 </style>
 
-<div class="container mx-auto p-8">
+<div class="container mx-auto p-4 sm:p-8">
     <!-- Hero Section -->
-    <div class="text-center mb-16">
-        <h1 class="text-6xl font-black mb-6 gradient-text floating">🔥 ABOUT COACHSMART 🔥</h1>
-        <p class="text-2xl text-gray-300 mb-8">The fitness app that's actually cool! 🚀</p>
+    <div class="text-center mb-12 sm:mb-16">
+        <h1 class="text-4xl sm:text-6xl font-black mb-6 gradient-text floating">🔥 ABOUT COACHSMART 🔥</h1>
+        <p class="text-xl sm:text-2xl text-gray-300 mb-8">Fitness, Simplified. For You. By You. 🚀</p>
     </div>
     
     <!-- Mission Section -->
-    <div class="mb-16">
-        <div class="bg-gradient-to-r from-purple-900/50 to-pink-900/50 rounded-3xl p-8 backdrop-blur-lg border border-purple-500/30">
-            <h2 class="text-4xl font-black text-white mb-6">🎯 Our Mission</h2>
-            <div class="text-gray-200 text-lg space-y-4">
+    <div class="mb-12 sm:mb-16">
+        <div class="bg-gradient-to-r from-purple-900/50 to-pink-900/50 rounded-3xl p-6 sm:p-8 backdrop-blur-lg border border-purple-500/30">
+            <h2 class="text-3xl sm:text-4xl font-black text-white mb-6">🎯 My Mission</h2>
+            <div class="text-gray-200 text-base sm:text-lg space-y-4">
                 <p>
-                    At CoachSmart, we're tired of boring fitness apps that feel like homework. 
-                    We're here to make fitness <span class="font-black text-yellow-300">actually fun</span> for teens! 
-                    🎮
+                    Hey there! I'm Zander, a student developer and Division 1 soccer player with a passion for fitness and technology. 
+                    After years of athletics and competitive sports, I noticed a gap in the market for fitness tools that truly engage 
+                    and motivate young athletes like you.
                 </p>
                 <p>
-                    Whether you're just starting out or trying to level up your game, CoachSmart gives you 
-                    personalized workouts that feel like challenges, not chores. Get ready to crush your goals! 💪
+                    CoachSmart was born from my desire to make fitness fun and accessible for everyone. I combined my love for sports, 
+                    mathematics, and technology to create a platform that helps you track progress, stay motivated, and achieve your 
+                    fitness goals in a way that feels more like a game than a chore.
                 </p>
             </div>
         </div>
     </div>
     
-    <!-- Team Section -->
-    <div class="mb-16">
-        <h2 class="text-4xl font-black text-white mb-8 text-center">👥 The Dream Team</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="team-card p-8 rounded-3xl text-center text-white">
-                <div class="w-32 h-32 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full mx-auto mb-6 flex items-center justify-center floating">
-                    <i class="fas fa-user text-5xl"></i>
+    <!-- About Me Section -->
+    <div class="mb-12 sm:mb-16">
+        <h2 class="text-3xl sm:text-4xl font-black text-white mb-8 text-center">⚡ My Journey</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div class="team-card p-6 sm:p-8 rounded-3xl text-center text-white">
+                <div class="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full mx-auto mb-4 sm:mb-6 flex items-center justify-center floating">
+                    <i class="fas fa-futbol text-4xl sm:text-5xl"></i>
                 </div>
-                <h3 class="text-2xl font-black mb-2">John "The Beast" Doe</h3>
-                <p class="text-yellow-300 font-semibold mb-4">Founder & CEO</p>
-                <p class="text-gray-200">Former pro athlete turned tech geek 🏃‍♂️💻</p>
+                <h3 class="text-xl sm:text-2xl font-black mb-2">Athletic Background</h3>
+                <p class="text-yellow-300 font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Soccer & Athletics</p>
+                <p class="text-gray-200 text-sm sm:text-base">Competing at the Division 1 level taught me the importance of discipline, training, and smart goal-setting.</p>
             </div>
             
-            <div class="team-card p-8 rounded-3xl text-center text-white">
-                <div class="w-32 h-32 bg-gradient-to-r from-green-400 to-green-600 rounded-full mx-auto mb-6 flex items-center justify-center floating" style="animation-delay: 0.2s;">
-                    <i class="fas fa-user text-5xl"></i>
+            <div class="team-card p-6 sm:p-8 rounded-3xl text-center text-white">
+                <div class="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-r from-green-400 to-green-600 rounded-full mx-auto mb-4 sm:mb-6 flex items-center justify-center floating" style="animation-delay: 0.2s;">
+                    <i class="fas fa-laptop-code text-4xl sm:text-5xl"></i>
                 </div>
-                <h3 class="text-2xl font-black mb-2">Jane "Iron Lady" Smith</h3>
-                <p class="text-yellow-300 font-semibold mb-4">Head of Training</p>
-                <p class="text-gray-200">Certified trainer who makes workouts lit! 🔥💪</p>
+                <h3 class="text-xl sm:text-2xl font-black mb-2">Tech Passion</h3>
+                <p class="text-yellow-300 font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Student Developer</p>
+                <p class="text-gray-200 text-sm sm:text-base">Combining my love for mathematics and technology to create solutions that make a real difference.</p>
             </div>
             
-            <div class="team-card p-8 rounded-3xl text-center text-white">
-                <div class="w-32 h-32 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center floating" style="animation-delay: 0.4s;">
-                    <i class="fas fa-user text-5xl"></i>
+            <div class="team-card p-6 sm:p-8 rounded-3xl text-center text-white">
+                <div class="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full mx-auto mb-4 sm:mb-6 flex items-center justify-center floating" style="animation-delay: 0.4s;">
+                    <i class="fas fa-heart text-4xl sm:text-5xl"></i>
                 </div>
-                <h3 class="text-2xl font-black mb-2">Alex "AI Master" Johnson</h3>
-                <p class="text-yellow-300 font-semibold mb-4">AI Specialist</p>
-                <p class="text-gray-200">The brain behind our smart coaching 🤖🧠</p>
+                <h3 class="text-xl sm:text-2xl font-black mb-2">The Vision</h3>
+                <p class="text-yellow-300 font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Making Fitness Fun</p>
+                <p class="text-gray-200 text-sm sm:text-base">Creating tools that transform fitness from a chore into an exciting, rewarding journey.</p>
             </div>
         </div>
     </div>
     
     <!-- Features Section -->
-    <div class="mb-16">
-        <h2 class="text-4xl font-black text-white mb-8 text-center">⚡ Why CoachSmart Hits Different</h2>
+    <div class="mb-12 sm:mb-16">
+        <h2 class="text-3xl sm:text-4xl font-black text-white mb-8 text-center">⚡ Why CoachSmart Works</h2>
         <div class="space-y-4">
-            <div class="feature-item p-6 rounded-2xl">
+            <div class="feature-item p-4 sm:p-6 rounded-2xl">
                 <div class="flex items-start">
-                    <div class="text-3xl mr-4">🎯</div>
+                    <div class="text-2xl sm:text-3xl mr-3 sm:mr-4">🎯</div>
                     <div>
-                        <h3 class="text-xl font-black text-white mb-2">Personalized Training Plans</h3>
-                        <p class="text-gray-300">Workouts that adapt to your goals and skill level - no more one-size-fits-all BS!</p>
+                        <h3 class="text-lg sm:text-xl font-black text-white mb-2">Built by an Athlete, for Athletes</h3>
+                        <p class="text-gray-300 text-sm sm:text-base">I've been where you are - juggling sports, school, and life. CoachSmart is designed with real athletic challenges in mind.</p>
                     </div>
                 </div>
             </div>
             
-            <div class="feature-item p-6 rounded-2xl">
+            <div class="feature-item p-4 sm:p-6 rounded-2xl">
                 <div class="flex items-start">
-                    <div class="text-3xl mr-4">🤖</div>
+                    <div class="text-2xl sm:text-3xl mr-3 sm:mr-4">🤖</div>
                     <div>
-                        <h3 class="text-xl font-black text-white mb-2">AI-Powered Feedback</h3>
-                        <p class="text-gray-300">Get instant tips on your form and technique - like having a coach in your pocket!</p>
+                        <h3 class="text-lg sm:text-xl font-black text-white mb-2">AI-Powered Progress</h3>
+                        <p class="text-gray-300 text-sm sm:text-base">Using cutting-edge AI to provide personalized training insights and help you track your improvement over time.</p>
                     </div>
                 </div>
             </div>
             
-            <div class="feature-item p-6 rounded-2xl">
+            <div class="feature-item p-4 sm:p-6 rounded-2xl">
                 <div class="flex items-start">
-                    <div class="text-3xl mr-4">📊</div>
+                    <div class="text-2xl sm:text-3xl mr-3 sm:mr-4">📊</div>
                     <div>
-                        <h3 class="text-xl font-black text-white mb-2">Progress Tracking</h3>
-                        <p class="text-gray-300">Watch your stats improve with detailed analytics - flex on your friends with your gains! 💪</p>
+                        <h3 class="text-lg sm:text-xl font-black text-white mb-2">Data-Driven Results</h3>
+                        <p class="text-gray-300 text-sm sm:text-base">My love for mathematics helps create smart algorithms that analyze your performance and suggest improvements.</p>
                     </div>
                 </div>
             </div>
             
-            <div class="feature-item p-6 rounded-2xl">
+            <div class="feature-item p-4 sm:p-6 rounded-2xl">
                 <div class="flex items-start">
-                    <div class="text-3xl mr-4">🏆</div>
+                    <div class="text-2xl sm:text-3xl mr-3 sm:mr-4">🏆</div>
                     <div>
-                        <h3 class="text-xl font-black text-white mb-2">Expert Guidance</h3>
-                        <p class="text-gray-300">Learn from certified fitness pros who know what actually works for teens!</p>
+                        <h3 class="text-lg sm:text-xl font-black text-white mb-2">For Everyone</h3>
+                        <p class="text-gray-300 text-sm sm:text-base">Whether you're a competitive athlete or just starting your fitness journey, CoachSmart adapts to your level.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- Contact Section -->
+    <div class="mb-12 sm:mb-16 text-center">
+        <h2 class="text-3xl sm:text-4xl font-black text-white mb-6">Let's Connect! 🤝</h2>
+        <p class="text-lg sm:text-xl text-gray-300 mb-6 sm:mb-8">Have questions or feedback? I'd love to hear from you!</p>
+        <a href="mailto:zander.coachsmart@example.com" class="bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white font-bold text-base sm:text-lg py-2 sm:py-3 px-6 sm:px-8 rounded-full inline-flex items-center transition-all transform hover:scale-105">
+            <i class="fas fa-envelope mr-2"></i> Email Me
+        </a>
+    </div>
+    
     <!-- CTA Section -->
     <div class="text-center">
-        <h2 class="text-4xl font-black text-white mb-6">Ready to join the movement? 🚀</h2>
-        <p class="text-xl text-gray-300 mb-8">Thousands of teens are already crushing their goals with CoachSmart</p>
-        <a href="{{ url_for('get_started') }}" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-black text-xl py-4 px-8 rounded-full inline-flex items-center transition-all transform hover:scale-105">
-            <span class="mr-2">🚀</span> START YOUR JOURNEY
+        <h2 class="text-2xl sm:text-4xl font-black text-white mb-4 sm:mb-6">Ready to level up your game? 🚀</h2>
+        <p class="text-lg sm:text-xl text-gray-300 mb-6 sm:mb-8">Join me on this journey to better fitness and performance!</p>
+        <a href="{{ url_for('get_started') }}" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold text-base sm:text-xl py-3 sm:py-4 px-6 sm:px-8 rounded-full inline-flex items-center transition-all transform hover:scale-105">
+            <span class="mr-2">🎯</span> START YOUR JOURNEY
             <span class="ml-2">🔥</span>
         </a>
     </div>
