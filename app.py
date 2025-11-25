@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session
+from flask import Flask, render_template, request, flash, redirect, url_for, session, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.exceptions import HTTPException
 from datetime import datetime, timedelta
+import logging
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key
@@ -890,5 +892,38 @@ def join_challenge(challenge_id):
     
     return redirect(url_for('challenges'))
 
+# Error Handlers
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    app.logger.error(f'Server Error: {error}', exc_info=True)
+    return render_template('500.html'), 500
+
+# Handle other HTTP errors
+@app.errorhandler(HTTPException)
+def handle_http_error(error):
+    response = {
+        'error': error.name,
+        'code': error.code,
+        'message': error.description,
+    }
+    return render_template('error.html', error=response), error.code
+
+# Log all unhandled exceptions
+@app.errorhandler(Exception)
+def handle_exception(error):
+    app.logger.error(f'Unhandled Exception: {error}', exc_info=True)
+    return render_template('500.html'), 500
+
 if __name__ == '__main__':
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        filename='app.log'
+    )
     app.run(debug=True)
