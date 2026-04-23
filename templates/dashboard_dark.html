@@ -74,12 +74,13 @@
         .achievement {
             background: radial-gradient(circle, var(--gold-accent), var(--gold-primary));
             color: var(--bg-primary);
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 18px;
             font-weight: bold;
         }
 
@@ -101,17 +102,17 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded flex items-center justify-center">
-                        <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24">
+                    <div class="w-6 h-6 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded flex items-center justify-center">
+                        <svg class="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
                         </svg>
                     </div>
                     <h1 class="text-lg font-bold orbitron gold-gradient">CoachSmart</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="level-badge">LEVEL 1</div>
-                    <span class="text-gray-400">Welcome, {{ user.username }}</span>
-                    <a href="/logout" class="text-red-400 hover:text-red-300">Logout</a>
+                    <div class="level-badge text-xs">LEVEL 1</div>
+                    <span class="text-gray-400 text-sm">Welcome, {{ user.username }}</span>
+                    <a href="/logout" class="text-red-400 hover:text-red-300 text-sm">Logout</a>
                 </div>
             </div>
         </div>
