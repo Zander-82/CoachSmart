@@ -15,6 +15,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.0] - 2026-04-23
+
+### Added
+- **Polished dashboard redesign** - Premium, professional interface
+- **Enhanced usability** - Improved navigation and user experience
+- **Advanced data visualization** - Beautiful charts and progress indicators
+- **Interactive training modules** - Engaging workout selection interface
+- **Real-time performance metrics** - Live stats and analytics
+- **Smooth animations** - Refined micro-interactions and transitions
+
+### Changed
+- **Complete dashboard overhaul** - From functional to premium experience
+- **Enhanced visual hierarchy** - Better information architecture
+- **Improved accessibility** - Better contrast and navigation
+- **Refined color system** - More sophisticated dark theme palette
+- **Advanced component library** - Reusable UI elements
+
+### Design System
+- **Premium dark theme** - Enhanced with subtle gradients and shadows
+- **Gold accent refinement** - More sophisticated metallic effects
+- **Typography improvements** - Better readability and visual hierarchy
+- **Advanced animations** - Smooth transitions and loading states
+- **Glass morphism effects** - Modern frosted glass elements
+
+### User Experience
+- **Intuitive navigation** - Clear visual pathways and flow
+- **Progress visualization** - Multiple chart types and indicators
+- **Quick actions** - Easy access to common tasks
+- **Responsive design** - Perfect mobile and desktop experience
+- **Loading states** - Professional feedback during interactions
+
+---
+
 ## [2.1.0] - 2026-04-23
 
 ### Added

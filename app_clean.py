@@ -279,7 +279,7 @@ def dashboard():
     user_progress = UserProgress.query.filter_by(user_id=user_id).all()
     progress_dict = {p.muscle_group_id: p for p in user_progress}
     
-    return render_template('dashboard_dark.html', 
+    return render_template('dashboard_premium.html', 
                          user=user, 
                          muscle_groups=muscle_groups,
                          progress_dict=progress_dict)
