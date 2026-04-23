@@ -15,6 +15,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.0] - 2026-04-23
+
+### Added
+- **Dark theme design** - Rich, tasteful dark interface with gold accents
+- **Game-like training feel** - Gamification elements and interactive features
+- **Training-focused experience** - Shift from anatomy learning to fitness training
+- **Premium visual design** - Luxury dark theme with gold metallic accents
+- **Interactive training elements** - Progress bars, achievements, training levels
+
+### Changed
+- **UI/UX overhaul** - Complete redesign to dark theme
+- **Color scheme** - Dark backgrounds with gold accent colors
+- **Application focus** - From anatomy learning to fitness training
+- **Visual hierarchy** - Enhanced contrast and readability in dark mode
+- **Interactive elements** - More engaging, game-like interactions
+
+### Design System
+- **Dark backgrounds** - Rich charcoal and near-black surfaces
+- **Gold accents** - Metallic gold for important elements and highlights
+- **Premium typography** - Enhanced fonts for luxury feel
+- **Smooth animations** - Refined transitions and micro-interactions
+- **Gamification elements** - Progress indicators, achievements, levels
+
+### Technical
+- **CSS variables** - Consistent dark theme color system
+- **Enhanced animations** - Smooth transitions and hover effects
+- **Interactive components** - More engaging user interactions
+
+---
+
 ## [2.0.0] - 2026-03-25
 
 ### MAJOR CHANGES

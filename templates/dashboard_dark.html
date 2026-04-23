@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Training Dashboard - CoachSmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --gold-primary: #FFD700;
+            --gold-secondary: #FFA500;
+            --gold-accent: #FFED4E;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #333333;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .orbitron {
+            font-family: 'Orbitron', monospace;
+        }
+
+        .gold-gradient {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gold-button {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            color: var(--bg-primary);
+            transition: all 0.3s ease;
+        }
+
+        .gold-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .dark-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, var(--gold-accent), var(--gold-primary));
+            color: var(--bg-primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--gold-primary);
+        }
+
+        .achievement {
+            background: radial-gradient(circle, var(--gold-accent), var(--gold-primary));
+            color: var(--bg-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .workout-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .workout-card:hover {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded flex items-center justify-center">
+                        <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-lg font-bold orbitron gold-gradient">CoachSmart</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="level-badge">LEVEL 1</div>
+                    <span class="text-gray-400">Welcome, {{ user.username }}</span>
+                    <a href="/logout" class="text-red-400 hover:text-red-300">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- User Stats Header -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card rounded-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Total Workouts</p>
+                        <p class="text-2xl font-bold text-yellow-400">24</p>
+                    </div>
+                    <div class="achievement">🏋️</div>
+                </div>
+            </div>
+            <div class="stat-card rounded-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Current Streak</p>
+                        <p class="text-2xl font-bold text-yellow-400">7 days</p>
+                    </div>
+                    <div class="achievement">🔥</div>
+                </div>
+            </div>
+            <div class="stat-card rounded-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">XP Points</p>
+                        <p class="text-2xl font-bold text-yellow-400">1,250</p>
+                    </div>
+                    <div class="achievement">⭐</div>
+                </div>
+            </div>
+            <div class="stat-card rounded-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Rank</p>
+                        <p class="text-2xl font-bold text-yellow-400">#42</p>
+                    </div>
+                    <div class="achievement">🏆</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Level Progress -->
+            <div class="dark-card rounded-lg p-6">
+                <h3 class="text-xl font-bold text-yellow-400 mb-4">Level Progress</h3>
+                <div class="relative pt-1">
+                    <div class="flex mb-4 items-center justify-between">
+                        <span class="text-sm text-gray-400">Level 1</span>
+                        <span class="text-sm text-gray-400">Level 2</span>
+                    </div>
+                    <div class="overflow-hidden h-3 text-xs flex rounded-full bg-gray-700">
+                        <div style="width:65%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">650 / 1000 XP to next level</p>
+                </div>
+            </div>
+
+            <!-- Weekly Goal -->
+            <div class="dark-card rounded-lg p-6">
+                <h3 class="text-xl font-bold text-yellow-400 mb-4">Weekly Goal</h3>
+                <div class="flex items-center justify-center mb-4">
+                    <svg class="progress-ring" width="80" height="80">
+                        <circle cx="40" cy="40" r="35" stroke="var(--bg-tertiary)" stroke-width="6" fill="none"/>
+                        <circle cx="40" cy="40" r="35" stroke="url(#gold-gradient)" stroke-width="6" fill="none" stroke-dasharray="220" stroke-dashoffset="66" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="gold-gradient">
+                                <stop offset="0%" stop-color="#FFD700"/>
+                                <stop offset="100%" stop-color="#FFA500"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="absolute">
+                        <span class="text-2xl font-bold text-yellow-400">70%</span>
+                    </div>
+                </div>
+                <p class="text-center text-sm text-gray-400">5 of 7 workouts completed</p>
+            </div>
+
+            <!-- Achievements -->
+            <div class="dark-card rounded-lg p-6">
+                <h3 class="text-xl font-bold text-yellow-400 mb-4">Recent Achievements</h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="achievement">🏃</div>
+                    <div class="achievement">💪</div>
+                    <div class="achievement">🎯</div>
+                    <div class="achievement">⚡</div>
+                    <div class="achievement">🏅</div>
+                    <div class="achievement">🔥</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Programs -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Today's Workout -->
+            <div class="dark-card rounded-lg p-6">
+                <h3 class="text-xl font-bold text-yellow-400 mb-4">Today's Training</h3>
+                <div class="space-y-3">
+                    <div class="workout-card rounded-lg p-4 cursor-pointer">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-white">Upper Body Power</h4>
+                                <p class="text-sm text-gray-400">45 min • High Intensity</p>
+                            </div>
+                            <div class="text-yellow-400">→</div>
+                        </div>
+                    </div>
+                    <div class="workout-card rounded-lg p-4 cursor-pointer">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-white">Core Crusher</h4>
+                                <p class="text-sm text-gray-400">20 min • Medium Intensity</p>
+                            </div>
+                            <div class="text-yellow-400">→</div>
+                        </div>
+                    </div>
+                    <div class="workout-card rounded-lg p-4 cursor-pointer">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-white">Flexibility Flow</h4>
+                                <p class="text-sm text-gray-400">15 min • Low Intensity</p>
+                            </div>
+                            <div class="text-yellow-400">→</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Categories -->
+            <div class="dark-card rounded-lg p-6">
+                <h3 class="text-xl font-bold text-yellow-400 mb-4">Training Programs</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="workout-card rounded-lg p-4 text-center cursor-pointer">
+                        <div class="text-2xl mb-2">💪</div>
+                        <h4 class="font-bold text-sm">Strength</h4>
+                        <p class="text-xs text-gray-400">12 programs</p>
+                    </div>
+                    <div class="workout-card rounded-lg p-4 text-center cursor-pointer">
+                        <div class="text-2xl mb-2">🏃</div>
+                        <h4 class="font-bold text-sm">Cardio</h4>
+                        <p class="text-xs text-gray-400">8 programs</p>
+                    </div>
+                    <div class="workout-card rounded-lg p-4 text-center cursor-pointer">
+                        <div class="text-2xl mb-2">🧘</div>
+                        <h4 class="font-bold text-sm">Flexibility</h4>
+                        <p class="text-xs text-gray-400">6 programs</p>
+                    </div>
+                    <div class="workout-card rounded-lg p-4 text-center cursor-pointer">
+                        <div class="text-2xl mb-2">⚡</div>
+                        <h4 class="font-bold text-sm">HIIT</h4>
+                        <p class="text-xs text-gray-400">10 programs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="fixed top-4 right-4 z-50">
+                {% for category, message in messages %}
+                    <div class="mb-2 p-4 rounded-md {% if category == 'error' %}bg-red-900/90 text-red-300{% else %}bg-green-900/90 text-green-300{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

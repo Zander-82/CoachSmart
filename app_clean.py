@@ -183,7 +183,7 @@ def init_db():
 def index():
     if 'user_id' in session:
         return redirect(url_for('dashboard'))
-    return render_template('index_simplified.html')
+    return render_template('index_dark.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -279,7 +279,7 @@ def dashboard():
     user_progress = UserProgress.query.filter_by(user_id=user_id).all()
     progress_dict = {p.muscle_group_id: p for p in user_progress}
     
-    return render_template('dashboard_simplified.html', 
+    return render_template('dashboard_dark.html', 
                          user=user, 
                          muscle_groups=muscle_groups,
                          progress_dict=progress_dict)
