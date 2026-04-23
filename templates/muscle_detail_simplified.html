@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ muscle.name }} - CoachSmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="text-xl font-bold text-gray-900">CoachSmart</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/dashboard" class="text-gray-600 hover:text-gray-900">← Back to Dashboard</a>
+                    <a href="/logout" class="text-red-600 hover:text-red-800">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ muscle.name }}</h1>
+                    <p class="text-gray-600">Last accessed: {{ progress.last_accessed.strftime('%B %d, %Y at %I:%M %p') if progress else 'First time visiting' }}</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">Times Viewed</div>
+                    <div class="text-2xl font-bold text-blue-600">{{ progress.access_count if progress else 1 }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Description -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">About This Muscle Group</h2>
+                    <p class="text-gray-700 leading-relaxed">{{ muscle.description }}</p>
+                </div>
+
+                <!-- Exercises -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">Recommended Exercises</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        {% set exercises = muscle.exercises.replace('[', '').replace(']', '').replace('"', '').split(', ') %}
+                        {% for exercise in exercises %}
+                        <div class="bg-blue-50 rounded-lg p-4 hover:bg-blue-100 transition duration-200">
+                            <h3 class="font-medium text-blue-900">{{ exercise }}</h3>
+                            <p class="text-sm text-blue-700 mt-1">Target exercise for {{ muscle.name }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Anatomy Details -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">Anatomy Details</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between py-2 border-b">
+                            <span class="text-gray-600">Location</span>
+                            <span class="font-medium">{{ muscle.location.replace('_', ' ').title() }}</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b">
+                            <span class="text-gray-600">Primary Function</span>
+                            <span class="font-medium">
+                                {% if 'chest' in muscle.name.lower() %}Pushing movements, arm adduction
+                                {% elif 'back' in muscle.name.lower() %}Pulling movements, arm extension
+                                {% elif 'shoulder' in muscle.name.lower() %}Arm mobility, multi-directional movement
+                                {% elif 'bicep' in muscle.name.lower() %}Elbow flexion, forearm supination
+                                {% elif 'tricep' in muscle.name.lower() %}Elbow extension
+                                {% elif 'quad' in muscle.name.lower() %}Knee extension
+                                {% elif 'hamstring' in muscle.name.lower() %}Knee flexion, hip extension
+                                {% elif 'calf' in muscle.name.lower() %}Ankle plantar flexion
+                                {% elif 'core' in muscle.name.lower() or 'abs' in muscle.name.lower() %}Stability, posture support
+                                {% elif 'glute' in muscle.name.lower() %}Hip extension, abduction
+                                {% else %}Movement and stability
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="flex justify-between py-2">
+                            <span class="text-gray-600">Common Injuries</span>
+                            <span class="font-medium">
+                                {% if 'chest' in muscle.name.lower() %}Strain, tear
+                                {% elif 'back' in muscle.name.lower() %}Strain, sprain
+                                {% elif 'shoulder' in muscle.name.lower() %}Rotator cuff issues
+                                {% elif 'bicep' in muscle.name.lower() %}Tendonitis, strain
+                                {% elif 'tricep' in muscle.name.lower() %}Strain, tendonitis
+                                {% elif 'quad' in muscle.name.lower() %}Strain, contusion
+                                {% elif 'hamstring' in muscle.name.lower() %}Strain, pull
+                                {% elif 'calf' in muscle.name.lower() %}Strain, Achilles issues
+                                {% elif 'core' in muscle.name.lower() or 'abs' in muscle.name.lower() %}Strain, hernia
+                                {% elif 'glute' in muscle.name.lower() %}Strain, piriformis syndrome
+                                {% else %}Strain, overuse
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Personal Notes -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">Your Notes</h2>
+                    <form id="notes-form" method="POST" action="/save_notes/{{ muscle.id }}">
+                        <textarea name="notes" rows="8" 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  placeholder="Add your personal notes about this muscle group...">{{ progress.notes if progress else '' }}</textarea>
+                        <button type="submit" class="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">
+                            Save Notes
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Quick Tips -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">Quick Tips</h2>
+                    <ul class="space-y-3 text-sm text-gray-700">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Always warm up before targeting this muscle group</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Focus on proper form over heavy weight</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Allow adequate recovery time between workouts</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Listen to your body and stop if you feel pain</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Related Muscles -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">Related Muscle Groups</h2>
+                    <div class="space-y-2">
+                        {% if muscle.location == 'upper_body' %}
+                        <a href="/muscle/2" class="block text-blue-600 hover:text-blue-800">Back (Latissimus)</a>
+                        <a href="/muscle/3" class="block text-blue-600 hover:text-blue-800">Shoulders (Deltoids)</a>
+                        {% elif muscle.location == 'lower_body' %}
+                        <a href="/muscle/9" class="block text-blue-600 hover:text-blue-800">Glutes</a>
+                        <a href="/muscle/8" class="block text-blue-600 hover:text-blue-800">Core (Abs)</a>
+                        {% else %}
+                        <a href="/muscle/5" class="block text-blue-600 hover:text-blue-800">Quadriceps</a>
+                        <a href="/muscle/6" class="block text-blue-600 hover:text-blue-800">Hamstrings</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Auto-save notes
+        let saveTimeout;
+        const notesForm = document.getElementById('notes-form');
+        const notesTextarea = notesForm.querySelector('textarea');
+        
+        notesTextarea.addEventListener('input', function() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                const formData = new FormData(notesForm);
+                fetch(notesForm.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Notes saved automatically');
+                    }
+                })
+                .catch(error => console.error('Error saving notes:', error));
+            }, 2000); // Save after 2 seconds of inactivity
+        });
+    </script>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="fixed top-4 right-4 z-50">
+                {% for category, message in messages %}
+                    <div class="mb-2 p-4 rounded-md shadow-lg {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

@@ -4,20 +4,72 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import HTTPException
 from datetime import datetime, timedelta
 import logging
+import os
+from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key
+app.secret_key = os.urandom(32).hex()  # Secure random secret key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///coachsmart.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Secure Session Configuration
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
+
 db = SQLAlchemy(app)
+
+# Role-Based Access Control Decorator
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('user_id') or not session.get('is_admin'):
+            abort(403, description='Admin access required')
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Security Headers Middleware
+@app.after_request
+def security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    return response
+
+# Security Event Logger
+security_logger = logging.getLogger('security')
+security_logger.setLevel(logging.WARNING)
+handler = logging.FileHandler('security.log')
+handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
+security_logger.addHandler(handler)
+
+# Secure Error Handlers
+@app.errorhandler(403)
+def forbidden(error):
+    security_logger.warning(f"FORBIDDEN_ACCESS: ip={request.remote_addr}, url={request.url}")
+    return render_template('403.html'), 403
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    security_logger.error(f"INTERNAL_ERROR: ip={request.remote_addr}, url={request.url}, error={str(error)}")
+    return render_template('500.html'), 500
 
 # User Model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)  # Hashed password
+    is_admin = db.Column(db.Boolean, default=False)  # Role-based access control
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    last_login = db.Column(db.DateTime)
     # Relationships
     workouts = db.relationship('Workout', backref='user', lazy=True, cascade='all, delete-orphan')
     user_stats = db.relationship('UserStats', backref='user', lazy=True, uselist=False, cascade='all, delete-orphan')
@@ -244,7 +296,7 @@ def signup():
         # Create new user
         try:
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-            new_user = User(username=username, email=email, password=hashed_password)
+            new_user = User(username=username, email=email, password_hash=hashed_password)
             db.session.add(new_user)
             db.session.commit()
             
@@ -254,9 +306,11 @@ def signup():
             
             db.session.commit()
             
-            # Log the user in
+            # Log the user in with secure session
             session['user_id'] = new_user.id
             session['username'] = new_user.username
+            session['is_admin'] = new_user.is_admin
+            session.permanent = True
             flash('Account created successfully!', 'success')
             return redirect(url_for('dashboard'))
             
@@ -279,13 +333,24 @@ def signin():
             
         user = User.query.filter_by(email=email).first()
         
-        if user and check_password_hash(user.password, password):
-            # Log the user in
+        if user and check_password_hash(user.password_hash, password):
+            # Update last login
+            user.last_login = datetime.utcnow()
+            db.session.commit()
+            
+            # Log successful login
+            security_logger.info(f"SUCCESSFUL_LOGIN: user_id={user.id}, email={email}, ip={request.remote_addr}")
+            
+            # Log the user in with secure session
             session['user_id'] = user.id
             session['username'] = user.username
+            session['is_admin'] = user.is_admin
+            session.permanent = True
             flash('Logged in successfully!', 'success')
             return redirect(url_for('dashboard'))
         else:
+            # Log failed login attempt
+            security_logger.warning(f"FAILED_LOGIN: email={email}, ip={request.remote_addr}")
             flash('Invalid email or password.', 'error')
             return redirect(url_for('get_started'))
     

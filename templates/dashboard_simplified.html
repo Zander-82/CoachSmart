@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CoachSmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .muscle-area {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .muscle-area:hover {
+            fill: #3b82f6;
+            stroke: #1e40af;
+            stroke-width: 2;
+            filter: brightness(1.1);
+        }
+        .muscle-area.visited {
+            fill: #10b981;
+        }
+        .muscle-card {
+            transition: all 0.3s ease;
+        }
+        .muscle-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-gray-900">CoachSmart</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600">Welcome, {{ user.username }}</span>
+                    <a href="/logout" class="text-red-600 hover:text-red-800">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Interactive Muscle Anatomy</h2>
+            <p class="text-gray-600">Click on any muscle group to learn detailed information and exercises</p>
+        </div>
+
+        <div class="grid lg:grid-cols-1 gap-8">
+            <!-- Front View Diagram -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h3 class="text-xl font-semibold mb-4 text-center">Front View - Upper Body</h3>
+                <div class="relative">
+                    <svg viewBox="0 0 400 400" class="w-full h-auto">
+                        <!-- Head -->
+                        <circle cx="200" cy="40" r="25" fill="#fdbcb4" stroke="#333" stroke-width="2"/>
+                        
+                        <!-- Neck -->
+                        <rect x="185" y="60" width="30" height="25" fill="#fdbcb4" stroke="#333" stroke-width="2" rx="5"/>
+                        
+                        <!-- Shoulders -->
+                        <ellipse cx="120" cy="90" rx="25" ry="15" fill="#fdbcb4" stroke="#333" stroke-width="2"/>
+                        <ellipse cx="280" cy="90" rx="25" ry="15" fill="#fdbcb4" stroke="#333" stroke-width="2"/>
+                        
+                        <!-- Chest -->
+                        <path class="muscle-area {% if progress_dict[1] %}visited{% endif %}" 
+                              data-muscle-id="1" d="M 140 110 Q 140 110 200 120 T 260 110 Q 260 110 200 120 Z" 
+                              fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Left Bicep -->
+                        <ellipse class="muscle-area {% if progress_dict[4] %}visited{% endif %}" 
+                                 data-muscle-id="4" cx="130" cy="140" rx="18" ry="35" 
+                                 fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Right Bicep -->
+                        <ellipse class="muscle-area {% if progress_dict[4] %}visited{% endif %}" 
+                                 data-muscle-id="4" cx="270" cy="140" rx="18" ry="35" 
+                                 fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Left Tricep -->
+                        <path class="muscle-area {% if progress_dict[3] %}visited{% endif %}" 
+                              data-muscle-id="3" d="M 120 140 Q 115 160 120 180 T 130 180 Q 135 160 140 140 Z" 
+                              fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Right Tricep -->
+                        <path class="muscle-area {% if progress_dict[3] %}visited{% endif %}" 
+                              data-muscle-id="3" d="M 280 140 Q 285 160 270 180 T 270 140 Q 265 160 280 140 Z" 
+                              fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Abs/Core -->
+                        <ellipse class="muscle-area {% if progress_dict[8] %}visited{% endif %}" 
+                                 data-muscle-id="8" cx="200" cy="200" rx="40" ry="25" 
+                                 fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Muscle Labels -->
+                        <text x="200" y="125" text-anchor="middle" class="text-xs font-medium">Chest</text>
+                        <text x="130" y="140" text-anchor="middle" class="text-xs font-medium">Bicep</text>
+                        <text x="270" y="140" text-anchor="middle" class="text-xs font-medium">Bicep</text>
+                        <text x="120" y="165" text-anchor="middle" class="text-xs font-medium">Tricep</text>
+                        <text x="280" y="165" text-anchor="middle" class="text-xs font-medium">Tricep</text>
+                        <text x="200" y="200" text-anchor="middle" class="text-xs font-medium">Core</text>
+                    </svg>
+                </div>
+                
+                <!-- Legend -->
+                <div class="mt-4 flex items-center justify-center space-x-6 text-sm">
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 bg-blue-100 border border-gray-300 mr-2"></div>
+                        <span>Not Visited</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 bg-green-100 border border-gray-300 mr-2"></div>
+                        <span>Visited</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back View Diagram -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h3 class="text-xl font-semibold mb-4 text-center">Back View - Upper Body</h3>
+                <div class="relative">
+                    <svg viewBox="0 0 400 400" class="w-full h-auto">
+                        <!-- Back Outline -->
+                        <ellipse cx="200" cy="100" rx="60" ry="80" fill="#fdbcb4" stroke="#333" stroke-width="2" opacity="0.3"/>
+                        
+                        <!-- Trapezius -->
+                        <path class="muscle-area {% if progress_dict[2] %}visited{% endif %}" 
+                              data-muscle-id="2" d="M 140 60 Q 200 40 260 60 L 260 100 Q 200 120 140 100 Z" 
+                              fill="#f0f9ff" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Latissimus Dorsi -->
+                        <path class="muscle-area {% if progress_dict[2] %}visited{% endif %}" 
+                              data-muscle-id="2" d="M 140 100 Q 120 140 160 180 T 200 160 Q 240 140 260 100 T 200 100 Z" 
+                              fill="#f0f9ff" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Rear Shoulders -->
+                        <path class="muscle-area {% if progress_dict[2] %}visited{% endif %}" 
+                              data-muscle-id="2" d="M 120 80 Q 110 100 120 120 L 280 120 Q 290 100 280 80 Z" 
+                              fill="#f0f9ff" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Muscle Labels -->
+                        <text x="200" y="140" text-anchor="middle" class="text-xs font-medium">Lats</text>
+                        <text x="200" y="80" text-anchor="middle" class="text-xs font-medium">Traps</text>
+                        <text x="200" y="120" text-anchor="middle" class="text-xs font-medium">Rear Deltoids</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Lower Body Diagram -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h3 class="text-xl font-semibold mb-4 text-center">Lower Body - Front & Back</h3>
+                <div class="relative">
+                    <svg viewBox="0 0 400 450" class="w-full h-auto">
+                        <!-- Torso -->
+                        <rect x="150" y="50" width="100" height="120" fill="#fdbcb4" stroke="#333" stroke-width="2" rx="10"/>
+                        
+                        <!-- Glutes -->
+                        <path class="muscle-area {% if progress_dict[9] %}visited{% endif %}" 
+                              data-muscle-id="9" d="M 160 160 Q 200 150 240 160 T 200 180 Q 160 170 160 160 Z" 
+                              fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Left Leg -->
+                        <rect x="160" y="170" width="35" height="150" fill="#fdbcb4" stroke="#333" stroke-width="2" rx="8"/>
+                        
+                        <!-- Right Leg -->
+                        <rect x="205" y="170" width="35" height="150" fill="#fdbcb4" stroke="#333" stroke-width="2" rx="8"/>
+                        
+                        <!-- Left Quadriceps -->
+                        <path class="muscle-area {% if progress_dict[5] %}visited{% endif %}" 
+                              data-muscle-id="5" d="M 165 180 Q 165 200 175 250 T 165 320 Q 165 340 175 180 Z" 
+                              fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Right Quadriceps -->
+                        <path class="muscle-area {% if progress_dict[5] %}visited{% endif %}" 
+                              data-muscle-id="5" d="M 235 180 Q 235 200 225 250 T 235 320 Q 235 340 225 180 Z" 
+                              fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Left Hamstrings -->
+                        <path class="muscle-area {% if progress_dict[6] %}visited{% endif %}" 
+                              data-muscle-id="6" d="M 165 250 Q 165 280 175 320 T 165 380 Q 165 400 175 280 Z" 
+                              fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Right Hamstrings -->
+                        <path class="muscle-area {% if progress_dict[6] %}visited{% endif %}" 
+                              data-muscle-id="6" d="M 235 250 Q 235 280 225 320 T 235 380 Q 235 400 225 280 Z" 
+                              fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Left Calves -->
+                        <ellipse class="muscle-area {% if progress_dict[7] %}visited{% endif %}" 
+                                 data-muscle-id="7" cx="177" cy="380" rx="15" ry="40" 
+                                 fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Right Calves -->
+                        <ellipse class="muscle-area {% if progress_dict[7] %}visited{% endif %}" 
+                                 data-muscle-id="7" cx="223" cy="380" rx="15" ry="40" 
+                                 fill="#e8f4fd" stroke="#333" stroke-width="2" opacity="0.9"/>
+                        
+                        <!-- Muscle Labels -->
+                        <text x="200" y="170" text-anchor="middle" class="text-xs font-medium">Glutes</text>
+                        <text x="177" y="250" text-anchor="middle" class="text-xs font-medium">Quad</text>
+                        <text x="223" y="250" text-anchor="middle" class="text-xs font-medium">Quad</text>
+                        <text x="177" y="310" text-anchor="middle" class="text-xs font-medium">Ham</text>
+                        <text x="223" y="310" text-anchor="middle" class="text-xs font-medium">Ham</text>
+                        <text x="177" y="380" text-anchor="middle" class="text-xs font-medium">Calf</text>
+                        <text x="223" y="380" text-anchor="middle" class="text-xs font-medium">Calf</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Muscle Groups List -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-4">Muscle Groups</h3>
+                <div class="space-y-3 max-h-96 overflow-y-auto">
+                    {% for muscle in muscle_groups %}
+                    <div class="muscle-card bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100" 
+                         onclick="window.location.href='/muscle/{{ muscle.id }}'">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h4 class="font-medium text-gray-900">{{ muscle.name }}</h4>
+                                <p class="text-sm text-gray-600 mt-1 line-clamp-2">{{ muscle.description[:100] }}...</p>
+                                <div class="flex items-center mt-2 text-xs text-gray-500">
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">{{ muscle.location.replace('_', ' ').title() }}</span>
+                                    {% if progress_dict[muscle.id] %}
+                                        <span class="ml-2 text-green-600">✓ Viewed {{ progress_dict[muscle.id].access_count }} times</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-xl font-semibold mb-4">Your Learning Progress</h3>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-blue-600">{{ muscle_groups|length }}</div>
+                    <div class="text-sm text-gray-600">Total Muscle Groups</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-green-600">{{ progress_dict|length }}</div>
+                    <div class="text-sm text-gray-600">Muscles Studied</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-purple-600">
+                        {% if muscle_groups|length > 0 %}
+                        {{ ((progress_dict|length / muscle_groups|length) * 100)|round|int }}%
+                        {% else %}
+                        0%
+                        {% endif %}
+                    </div>
+                    <div class="text-sm text-gray-600">Completion Rate</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-orange-600">
+                        {% set total_views = progress_dict.values()|sum(attribute='access_count') %}
+                        {{ total_views }}
+                    </div>
+                    <div class="text-sm text-gray-600">Total Views</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Add click handlers to muscle areas in SVG
+        document.querySelectorAll('.muscle-area').forEach(area => {
+            area.addEventListener('click', function() {
+                const muscleId = this.getAttribute('data-muscle-id');
+                if (muscleId) {
+                    window.location.href = `/muscle/${muscleId}`;
+                }
+            });
+        });
+    </script>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="fixed top-4 right-4 z-50">
+                {% for category, message in messages %}
+                    <div class="mb-2 p-4 rounded-md shadow-lg {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>
