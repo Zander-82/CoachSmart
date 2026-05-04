@@ -15,6 +15,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.3.0] - 2026-05-04
+
+### Added
+- **Homepage layout rebuild** - Complete structural overhaul
+- **Fixed broken layout issues** - Proper responsive design implementation
+- **Enhanced visual hierarchy** - Better content organization
+- **Improved section spacing** - Proper margin and padding structure
+- **About section** - New content section with company information
+- **Better mobile responsiveness** - Optimized for all screen sizes
+
+### Changed
+- **Complete homepage redesign** - From broken to polished layout
+- **Navigation structure** - Improved header and footer positioning
+- **Form layout** - Better centered and responsive form design
+- **Feature cards** - Enhanced hover effects and animations
+- **Stats section** - Reorganized grid layout with proper spacing
+
+### Layout Fixes
+- **Hero section** - Proper centering and responsive text sizing
+- **Form container** - Fixed card positioning and border styling
+- **Feature grid** - Proper 3-column layout with consistent spacing
+- **About section** - New centered content with statistics
+- **Footer** - Simple, clean footer design
+
+### Visual Improvements
+- **Consistent spacing** - Standardized margins and padding
+- **Better typography** - Improved font sizing and hierarchy
+- **Enhanced animations** - Smooth transitions and hover states
+- **Color consistency** - Unified dark theme with gold accents
+
+---
+
 ## [2.2.0] - 2026-04-23
 
 ### Added
